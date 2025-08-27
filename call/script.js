@@ -41,9 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const verificationData = {
         name: "Monica Bulleri",
         pin: expectedPin,
-        accountNumber: "1010299",
-        transferAmount: "$5000",
-        beneficiary: "Robert Fitzwell",
+        accountNumber: "null",
+        transferAmount: "$111000",
+        beneficiary: "Monica Bulleri"",
         fee: "$88.88"
     };
     
