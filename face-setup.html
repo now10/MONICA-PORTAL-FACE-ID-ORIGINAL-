@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face Unlock Setup</title>
+  <!-- Use your dedicated face security stylesheet -->
+  <link rel="stylesheet" href="face_security.css">
+</head>
+<body>
+  <div class="face-container">
+    <div class="face-box">
+      <h2 class="face-title">🔒 Face Unlock Setup</h2>
+
+      <!-- Video Frame -->
+      <div class="video-wrapper">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas" style="display:none;"></canvas>
+      </div>
+
+      <!-- Instructions -->
+      <div id="instructions" class="instructions">
+        Please center your face in the frame and hold still...
+      </div>
+
+      <!-- Save button (hidden until ready) -->
+      <div id="save-section" style="display:none;">
+        <button id="saveBtn" class="action-btn">Save Face Data</button>
+      </div>
+
+      <!-- Success message -->
+      <div id="success-message" style="display:none;" class="success-box">
+        ✅ Facial Verification has been saved and synced with Account Security
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script src="face.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      FaceSystem.init("setup");
+    });
+  </script>
+</body>
+</html>
