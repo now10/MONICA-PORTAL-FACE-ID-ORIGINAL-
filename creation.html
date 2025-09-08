@@ -792,7 +792,7 @@
         
         <div class="btc-price">
             <div class="price-container">
-                <div class="current-price" id="btcPrice">$63,427.18</div>
+                <div class="current-price" id="btcPrice">€63,427.18</div>
                 <div class="price-change positive" id="priceChange">+2.34%</div>
             </div>
             <div class="timeframes">
@@ -845,12 +845,12 @@
             <div class="balance-container">
                 <div class="balance-card">
                     <div class="balance-label">Current Balance</div>
-                    <div class="balance-value" id="currentBalance">$111,639.80</div>
+                    <div class="balance-value" id="currentBalance">€111,639.80</div>
                     <div class="balance-btc" id="currentBalanceBtc">3.42 BTC</div>
                 </div>
                 <div class="balance-card">
                     <div class="balance-label">Available Balance</div>
-                    <div class="balance-value" id="availableBalance">$111,639.80</div>
+                    <div class="balance-value" id="availableBalance">€111,639.80</div>
                     <div class="balance-btc" id="availableBalanceBtc">3.08 BTC</div>
                 </div>
             </div>
@@ -865,13 +865,13 @@
             </div>
             <div class="metric-card">
                 <div class="metric-label">Portfolio Value</div>
-                <div class="metric-value" id="portfolioValue">$14.2M</div>
+                <div class="metric-value" id="portfolioValue">€14.2M</div>
                 <div class="price-change positive">+20%</div>
             </div>
             
             <div class="metric-card">
                 <div class="metric-label">24h Profit</div>
-                <div class="metric-value" id="dailyProfit">+$9,223</div>
+                <div class="metric-value" id="dailyProfit">+€9,223</div>
             </div>
             
             <div class="metric-card">
@@ -898,7 +898,7 @@
 
     // Correct credentials (for demo purposes)
     const CORRECT_CERTIFICATE = "TRV6-BTC-2023";
-    const CORRECT_HASH = "XK9#7mN2$pL1";
+    const CORRECT_HASH = "XK9#7mN2€pL1";
 
     loginBtn.addEventListener('click', function() {
         const certificateId = document.getElementById('certificateId').value;
@@ -915,14 +915,14 @@
                 dashboard.style.display = 'block';
             }, 3000);
         } else {
-            alert("Invalid credentials. Please try again.\n\nDemo credentials:\nCertificate ID: TRV6-BTC-2023\nWithdrawal Hash: XK9#7mN2$pL1");
+            alert("Invalid credentials. Please try again.\n\nDemo credentials:\nCertificate ID: TRV6-BTC-2023\nWithdrawal Hash: XK9#7mN2€pL1");
         }
     });
 
     // For demo purposes, pre-fill the credentials on window load
     window.addEventListener('load', function() {
         document.getElementById('certificateId').value = "TRV6-BTC-2023";
-        document.getElementById('withdrawalHash').value = "XK9#7mN2$pL1";
+        document.getElementById('withdrawalHash').value = "XK9#7mN2€pL1";
     });
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -1076,17 +1076,17 @@
             }
 
             // Deduct balances immediately
-            currentBalance.textContent = '$' + (currentAmount - transferAmount).toLocaleString('en-US', {maximumFractionDigits: 2});
-            availableBalance.textContent = '$' + (availableAmount - transferAmount).toLocaleString('en-US', {maximumFractionDigits: 2});
+            currentBalance.textContent = '€' + (currentAmount - transferAmount).toLocaleString('en-US', {maximumFractionDigits: 2});
+            availableBalance.textContent = '€' + (availableAmount - transferAmount).toLocaleString('en-US', {maximumFractionDigits: 2});
 
             // Add transaction immediately
             const transactionList = document.getElementById('transactionsList');
             const transactionItem = document.createElement('div');
             transactionItem.className = 'transaction-item';
             transactionItem.innerHTML = `
-                <div class="transaction-amount">-$${transferAmount.toFixed(2)}</div>
+                <div class="transaction-amount">-€€{transferAmount.toFixed(2)}</div>
                 <div class="transaction-type">FET Transfer</div>
-                <div class="transaction-date">${new Date().toLocaleString()}</div>
+                <div class="transaction-date">€{new Date().toLocaleString()}</div>
             `;
             transactionList.prepend(transactionItem);
 
@@ -1130,7 +1130,7 @@
             const newChange = changePercent + (Math.random() - 0.5) * 0.3;
             const newPrice = currentPrice * (1 + newChange / 100);
 
-            document.getElementById('btcPrice').textContent = '$' + newPrice.toLocaleString('en-US', {maximumFractionDigits: 2});
+            document.getElementById('btcPrice').textContent = '€' + newPrice.toLocaleString('en-US', {maximumFractionDigits: 2});
             document.getElementById('priceChange').textContent = (newChange > 0 ? '+' : '') + newChange.toFixed(2) + '%';
             document.getElementById('priceChange').className = newChange >= 0 ? 'price-change positive' : 'price-change negative';
         }
