@@ -1,0 +1,25 @@
+/* Container where the settings details will show */
+.settings-content {
+  background: #1c1c1c;
+  border-top: 1px solid #333;
+  padding: 20px;
+  min-height: 200px;
+  color: #eee;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Titles inside the settings section */
+.settings-content h2 {
+  color: #f7931a;
+  margin-bottom: 10px;
+}
+
+/* Data block style */
+.settings-data {
+  background: #2a2a2a;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #444;
+}

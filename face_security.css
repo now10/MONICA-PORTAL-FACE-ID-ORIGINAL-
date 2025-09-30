@@ -1,0 +1,155 @@
+/* ================================
+   Face Verification Styles For Login 
+   ================================ */
+
+#faceModal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+#faceModal .face-verification {
+  background: #1a1a1a;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  width: 95%;
+  max-width: 420px;
+  box-shadow: 0 0 25px rgba(255, 165, 0, 0.4);
+  border: 2px solid orange;
+  animation: fadeIn 0.6s ease-out;
+}
+
+#faceModal .fv-title {
+  color: orange;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+#faceModal video {
+  width: 100%;
+  border-radius: 12px;
+  border: 3px solid orange;
+  margin-bottom: 1rem;
+}
+
+#faceModal .fv-message {
+  font-size: 0.95rem;
+  margin: 0.5rem 0 1rem;
+  color: #ccc;
+  animation: pulseText 1.5s infinite;
+}
+
+#faceModal .fv-btn {
+  background: orange;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  margin: 0.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+#faceModal .fv-btn:hover {
+  background: #e69500;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseText {
+  0%, 100% { color: #ccc; }
+  50% { color: orange; }
+}
+
+
+
+/* ================================
+   Face Setup Page (styled same as face verification)
+   ================================ */
+
+.face-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.92);
+}
+
+.face-box {
+  background: #1a1a1a;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  width: 95%;
+  max-width: 420px;
+  box-shadow: 0 0 25px rgba(255, 165, 0, 0.4);
+  border: 2px solid orange;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.face-title {
+  color: orange;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.video-wrapper video {
+  width: 100%;
+  border-radius: 12px;
+  border: 3px solid orange;
+  margin-bottom: 1rem;
+}
+
+.instructions {
+  font-size: 0.95rem;
+  margin: 0.5rem 0 1rem;
+  color: #ccc;
+  animation: pulseText 1.5s infinite;
+}
+
+.action-btn {
+  background: orange;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  margin: 0.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.action-btn:hover {
+  background: #e69500;
+}
+
+.success-box {
+  color: lightgreen;
+  margin-top: 1rem;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* Animations (same as face verification) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseText {
+  0%, 100% { color: #ccc; }
+  50% { color: orange; }
+}
