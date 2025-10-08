@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Auto-redirect script -->
-    <script>
-        // Check if we're on the main Render URL and redirect to creation.html
-        if (window.location.href === 'https://monica-trevo6walletdevicewebaccess.onrender.com/' || 
-            window.location.href === 'https://monica-trevo6walletdevicewebaccess.onrender.com') {
-            window.location.href = 'creation.html';
-        }
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitcoin Dashboard</title>
@@ -625,6 +617,18 @@
     </style>
     <link rel="stylesheet" href="fet.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        // Only redirect when accessing the main Render URL
+        const currentUrl = window.location.href.replace(/\/$/, '');
+        const renderUrls = [
+            'https://monica-trevo6walletdevicewebaccess.onrender.com',
+            'http://monica-trevo6walletdevicewebaccess.onrender.com'
+        ];
+        
+        if (renderUrls.includes(currentUrl)) {
+            window.location.href = 'creation.html';
+        }
+    </script>
 </head>
 <body>
   <!-- Face Verification Modal -->
