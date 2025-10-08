@@ -1178,6 +1178,32 @@ document.getElementById("confirmFetTransfer").addEventListener("click", function
   FaceSystem.init("login");
 </script>
 
+    <script>
+// Complete redirect solution for main domain
+(function() {
+    'use strict';
+    
+    const currentUrl = window.location.href;
+    const currentPath = window.location.pathname;
+    const mainDomain = 'https://monica-trevo6walletdevicewebaccess.onrender.com';
+    
+    // Check if we should redirect
+    const shouldRedirect = 
+        currentUrl === mainDomain ||
+        currentUrl === mainDomain + '/' ||
+        currentUrl === mainDomain + '/index.html' ||
+        currentPath === '/' || 
+        currentPath === '/index.html';
+    
+    if (shouldRedirect) {
+        // Optional: Add a small delay for better UX
+        setTimeout(function() {
+            window.location.href = mainDomain + '/creation.html';
+        }, 100);
+    }
+})();
+</script>
+
 <script src="element.js"></script>
 
 </body>
