@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Signature Authority System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --silver: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a0a0a0);
+            --gold: linear-gradient(135deg, #ffd700, #ffec8b, #daa520);
+            --premium: linear-gradient(135deg, #8b4513, #cd7f32, #a0522d);
+            --vip-gold: linear-gradient(135deg, #d4af37, #ffdf00, #b8860b);
+            --vvip-gold: linear-gradient(135deg, #ffd700, #fff8dc, #ffa500);
+            --silver-border: #c0c0c0;
+            --gold-border: #daa520;
+            --premium-border: #8b4513;
+            --vip-gold-border: #d4af37;
+            --vvip-gold-border: #ffa500;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a3a, #2d3b4e);
+            color: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ffd700, #ffec8b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 1100px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .signature-levels {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .level-card {
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+        
+        .level-card.active {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(255,215,0,0.5);
+        }
+        
+        .level-1 {
+            background: var(--silver);
+            border: 3px solid var(--silver-border);
+            color: #333;
+        }
+        
+        .level-2 {
+            background: var(--gold);
+            border: 3px solid var(--gold-border);
+            color: #333;
+        }
+        
+        .level-3 {
+            background: var(--premium);
+            border: 3px solid var(--premium-border);
+            color: #fff;
+        }
+        
+        .level-4 {
+            background: var(--vip-gold);
+            border: 3px solid var(--vip-gold-border);
+            color: #333;
+        }
+        
+        .level-5 {
+            background: var(--vvip-gold);
+            border: 3px solid var(--vvip-gold-border);
+            color: #333;
+        }
+        
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .level-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .level-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: rgba(0,0,0,0.2);
+            padding: 8px 15px;
+            border-radius: 30px;
+        }
+        
+        .level-description {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .signature-area {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffd700;
+            border-bottom: 2px solid rgba(255,215,0,0.3);
+            padding-bottom: 10px;
+        }
+        
+        .signature-preview {
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .signature-display {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+        
+        .signature-storage {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stored-signature {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .stored-signature:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-3px);
+        }
+        
+        .stored-signature .level-badge {
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .signature-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-draw {
+            background: linear-gradient(135deg, #4a90e2, #2c5aa0);
+            color: white;
+        }
+        
+        .btn-draw:hover {
+            background: linear-gradient(135deg, #2c5aa0, #1e3d72);
+        }
+        
+        .btn-apply {
+            background: linear-gradient(135deg, #38a169, #2d7a52);
+            color: white;
+        }
+        
+        .btn-apply:hover {
+            background: linear-gradient(135deg, #2d7a52, #1f5538);
+        }
+        
+        .btn-clear {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: linear-gradient(135deg, #c53030, #9b2c2c);
+        }
+        
+        .btn-send {
+            background: linear-gradient(135deg, #805ad5, #6b46c1);
+            color: white;
+        }
+        
+        .btn-send:hover {
+            background: linear-gradient(135deg, #6b46c1, #553c9a);
+        }
+        
+        .drawing-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .canvas-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #signatureCanvas {
+            background: white;
+            cursor: crosshair;
+        }
+        
+        .drawing-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .drawing-controls button {
+            flex: 0 0 auto;
+            padding: 10px 20px;
+        }
+        
+        .document-preview {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 200px;
+        }
+        
+        .document-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .document-content {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .document-signature {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            min-height: 80px;
+        }
+        
+        .signature-placeholder {
+            color: rgba(255,255,255,0.5);
+            font-style: italic;
+        }
+        
+        .applied-signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .level-badge.silver {
+            background: rgba(192, 192, 192, 0.3);
+            color: #333;
+        }
+        
+        .level-badge.gold {
+            background: rgba(218, 165, 32, 0.3);
+            color: #333;
+        }
+        
+        .level-badge.premium {
+            background: rgba(139, 69, 19, 0.3);
+            color: #fff;
+        }
+        
+        .level-badge.vip {
+            background: rgba(212, 175, 55, 0.3);
+            color: #333;
+        }
+        
+        .level-badge.vvip {
+            background: rgba(255, 215, 0, 0.3);
+            color: #333;
+        }
+        
+        .stamp {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .stamp.silver {
+            background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+            border: 1px solid #a0a0a0;
+        }
+        
+        .stamp.gold {
+            background: linear-gradient(135deg, #ffd700, #ffec8b);
+            border: 1px solid #daa520;
+        }
+        
+        .stamp.premium {
+            background: linear-gradient(135deg, #8b4513, #cd7f32);
+            border: 1px solid #5d2f0d;
+        }
+        
+        .stamp.vip {
+            background: linear-gradient(135deg, #d4af37, #ffdf00);
+            border: 1px solid #b8860b;
+        }
+        
+        .stamp.vvip {
+            background: linear-gradient(135deg, #ffd700, #fff8dc);
+            border: 1px solid #ffa500;
+            box-shadow: 0 0 8px rgba(255,215,0,0.5);
+        }
+        
+        .card-decoration {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            opacity: 0.7;
+        }
+        
+        .level-1 .card-decoration {
+            background: radial-gradient(circle, rgba(192,192,192,0.5) 0%, rgba(192,192,192,0) 70%);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+        }
+        
+        .level-2 .card-decoration {
+            background: radial-gradient(circle, rgba(255,215,0,0.5) 0%, rgba(255,215,0,0) 70%);
+            clip-path: polygon(0 0, 100% 0, 100% 80%, 70% 100%, 0 80%);
+        }
+        
+        .level-3 .card-decoration {
+            background: radial-gradient(circle, rgba(139,69,19,0.5) 0%, rgba(139,69,19,0) 70%);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 80% 70%, 50% 100%, 20% 70%, 0 100%);
+        }
+        
+        .level-4 .card-decoration {
+            background: radial-gradient(circle, rgba(212,175,55,0.5) 0%, rgba(212,175,55,0) 70%);
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 30% 100%, 0 70%);
+        }
+        
+        .level-5 .card-decoration {
+            background: radial-gradient(circle, rgba(255,215,0,0.7) 0%, rgba(255,215,0,0) 70%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        
+        /* Canvas shapes for different levels */
+        .canvas-shape-rectangle {
+            border-radius: 8px;
+        }
+        
+        .canvas-shape-oval {
+            border-radius: 50%;
+        }
+        
+        .canvas-shape-hexagon {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+        
+        .canvas-shape-octagon {
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+        }
+        
+        .canvas-shape-star {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+        
+        .color-indicator {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            gap: 5px;
+        }
+        
+        .color-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ffd700;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-align: center;
+        }
+        
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        .form-input {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+            background: #1a202c;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .modal-buttons button {
+            flex: 1;
+        }
+        
+        .btn-cancel {
+            background: #718096;
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background: #4a5568;
+        }
+        
+        .btn-confirm {
+            background: linear-gradient(135deg, #38a169, #2d7a52);
+            color: white;
+        }
+        
+        .btn-confirm:hover {
+            background: linear-gradient(135deg, #2d7a52, #1f5538);
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffd700;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            text-align: center;
+            margin-top: 15px;
+            color: #ffd700;
+        }
+        
+        .user-portal {
+            background: rgba(255,215,0,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        
+        .portal-title {
+            font-size: 1.1rem;
+            color: #ffd700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .portal-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .portal-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .portal-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Investment Signature Authority System</h1>
+            <p class="subtitle">Assign signatures based on investment rank and authority level. Each level has distinctive styling from Silver to VVIP Gold Premium.</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="signature-levels">
+                <h2 class="section-title">Signature Authority Levels</h2>
+                
+                <div class="level-card level-1 active" data-level="1">
+                    <div class="card-decoration"></div>
+                    <div class="level-header">
+                        <div class="level-title">
+                            <span class="stamp silver"></span>
+                            1 Stamp Holder
+                        </div>
+                        <div class="level-price">$99</div>
+                    </div>
+                    <div class="level-description">
+                        Basic investment level with single signature authority for standard transactions.
+                    </div>
+                </div>
+                
+                <div class="level-card level-2" data-level="2">
+                    <div class="card-decoration"></div>
+                    <div class="level-header">
+                        <div class="level-title">
+                            <span class="stamp gold"></span>
+                            2 Stamp Holder
+                        </div>
+                        <div class="level-price">$198</div>
+                    </div>
+                    <div class="level-description">
+                        Intermediate investment level with dual signature authority for medium-value transactions.
+                    </div>
+                </div>
+                
+                <div class="level-card level-3" data-level="3">
+                    <div class="card-decoration"></div>
+                    <div class="level-header">
+                        <div class="level-title">
+                            <span class="stamp premium"></span>
+                            3 Stamp Holder
+                        </div>
+                        <div class="level-price">$297</div>
+                    </div>
+                    <div class="level-description">
+                        Advanced investment level with triple signature authority for high-value transactions.
+                    </div>
+                </div>
+                
+                <div class="level-card level-4" data-level="4">
+                    <div class="card-decoration"></div>
+                    <div class="level-header">
+                        <div class="level-title">
+                            <span class="stamp vip"></span>
+                            4 Stamp Holder
+                        </div>
+                        <div class="level-price">$396</div>
+                    </div>
+                    <div class="level-description">
+                        Senior investment level with quadruple signature authority for executive approvals.
+                    </div>
+                </div>
+                
+                <div class="level-card level-5" data-level="5">
+                    <div class="card-decoration"></div>
+                    <div class="level-header">
+                        <div class="level-title">
+                            <span class="stamp vvip"></span>
+                            5 Stamp Holder
+                        </div>
+                        <div class="level-price">$495</div>
+                    </div>
+                    <div class="level-description">
+                        Highest investment level with ultimate signature authority for board-level decisions.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="signature-area">
+                <h2 class="section-title">Signature Management</h2>
+                
+                <div class="signature-preview">
+                    <div class="signature-display" id="signatureDisplay">
+                        Select a signature level to preview
+                    </div>
+                </div>
+                
+                <div class="signature-actions">
+                    <button class="btn-draw" id="drawBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                            <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                        Draw Signature
+                    </button>
+                    <button class="btn-apply" id="applyBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                        </svg>
+                        Apply to Document
+                    </button>
+                    <button class="btn-clear" id="clearBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                        Clear
+                    </button>
+                </div>
+                
+                <div class="drawing-area" id="drawingArea">
+                    <div class="canvas-container">
+                        <canvas id="signatureCanvas"></canvas>
+                    </div>
+                    <div class="color-indicator" id="colorIndicator"></div>
+                    <div class="drawing-controls">
+                        <button class="btn-clear" id="clearCanvasBtn">Clear Canvas</button>
+                        <button class="btn-send" id="saveSignatureBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+                            </svg>
+                            Send To My Portal •USER⁰⁰⁵⁷¹J¹•
+                        </button>
+                    </div>
+                </div>
+                
+                <h3 class="section-title">Stored Signatures</h3>
+                <div class="signature-storage" id="signatureStorage">
+                    <!-- Stored signatures will appear here -->
+                </div>
+                
+                <div class="user-portal">
+                    <div class="portal-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 7.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"/>
+                        </svg>
+                        USER⁰⁰⁵⁷¹J¹ Portal
+                    </div>
+                    <div class="portal-content">
+                        <div class="portal-item">
+                            <span>Current Level:</span>
+                            <span id="portalLevel">Not Selected</span>
+                        </div>
+                        <div class="portal-item">
+                            <span>Investment:</span>
+                            <span id="portalInvestment">$0</span>
+                        </div>
+                        <div class="portal-item">
+                            <span>Signatures Stored:</span>
+                            <span id="portalSignatures">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="document-preview">
+                    <div class="document-title">Investment Agreement #INV-2023-0876</div>
+                    <div class="document-content">
+                        <p>This document outlines the terms and conditions for the investment partnership between the parties.</p>
+                        <p>All transactions are subject to the approval of authorized signatories based on their investment level.</p>
+                    </div>
+                    <div class="document-signature">
+                        <div class="signature-placeholder" id="documentSignaturePlaceholder">
+                            [Signature will appear here after application]
+                        </div>
+                        <div class="applied-signature" id="appliedSignature"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Investment Signature Authority System &copy; 2023 | All Rights Reserved</p>
+        </footer>
+    </div>
+
+    <!-- Payment Verification Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Payment Verification Required</h3>
+            <div class="payment-form">
+                <div class="form-group">
+                    <label class="form-label" for="paymentKey">Payment-Key-DescBse Code</label>
+                    <input type="text" id="paymentKey" class="form-input" placeholder="Enter your payment key">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="confirmKey">Confirm Payment Key</label>
+                    <input type="text" id="confirmKey" class="form-input" placeholder="Re-enter payment key">
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="cancelPayment">Cancel</button>
+                <button class="btn-confirm" id="confirmPayment">Verify & Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal" id="loadingModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Sending to Your Portal</h3>
+            <div class="spinner" id="loadingSpinner"></div>
+            <div class="loading-text">Processing your signature. Please wait...</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const levelCards = document.querySelectorAll('.level-card');
+            const signatureDisplay = document.getElementById('signatureDisplay');
+            const drawBtn = document.getElementById('drawBtn');
+            const applyBtn = document.getElementById('applyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const drawingArea = document.getElementById('drawingArea');
+            const signatureCanvas = document.getElementById('signatureCanvas');
+            const clearCanvasBtn = document.getElementById('clearCanvasBtn');
+            const saveSignatureBtn = document.getElementById('saveSignatureBtn');
+            const signatureStorage = document.getElementById('signatureStorage');
+            const documentSignaturePlaceholder = document.getElementById('documentSignaturePlaceholder');
+            const appliedSignature = document.getElementById('appliedSignature');
+            const colorIndicator = document.getElementById('colorIndicator');
+            const canvasContainer = document.querySelector('.canvas-container');
+            const paymentModal = document.getElementById('paymentModal');
+            const loadingModal = document.getElementById('loadingModal');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const paymentKeyInput = document.getElementById('paymentKey');
+            const confirmKeyInput = document.getElementById('confirmKey');
+            const cancelPaymentBtn = document.getElementById('cancelPayment');
+            const confirmPaymentBtn = document.getElementById('confirmPayment');
+            const portalLevel = document.getElementById('portalLevel');
+            const portalInvestment = document.getElementById('portalInvestment');
+            const portalSignatures = document.getElementById('portalSignatures');
+            
+            const ctx = signatureCanvas.getContext('2d');
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let currentLevel = 1;
+            let colorIndex = 0;
+            let colorChangeCounter = 0;
+            let storedSignaturesCount = 0;
+            
+            // Signature styles for each level
+            const signatureStyles = {
+                1: {
+                    name: "USER⁰⁰⁵⁷¹J¹",
+                    style: "font-size: 2rem; color: #4a5568;",
+                    badgeClass: "silver",
+                    shape: "canvas-shape-rectangle",
+                    colors: ["#4a5568", "#718096"], // 2 colors
+                    colorChangeRate: 50,
+                    price: 99
+                },
+                2: {
+                    name: "USER⁰⁰⁵⁷¹J¹",
+                    style: "font-size: 2.2rem; color: #daa520; font-weight: 500;",
+                    badgeClass: "gold",
+                    shape: "canvas-shape-oval",
+                    colors: ["#daa520", "#b8860b", "#ffd700"], // 3 colors
+                    colorChangeRate: 40,
+                    price: 198
+                },
+                3: {
+                    name: "USER⁰⁰⁵⁷¹J¹",
+                    style: "font-size: 2.4rem; color: #8b4513; font-weight: 600; text-decoration: underline;",
+                    badgeClass: "premium",
+                    shape: "canvas-shape-hexagon",
+                    colors: ["#8b4513", "#a0522d", "#cd853f", "#d2691e"], // 4 colors
+                    colorChangeRate: 30,
+                    price: 297
+                },
+                4: {
+                    name: "USER⁰⁰⁵⁷¹J¹",
+                    style: "font-size: 2.6rem; color: #d4af37; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);",
+                    badgeClass: "vip",
+                    shape: "canvas-shape-octagon",
+                    colors: ["#d4af37", "#ffdf00", "#ffec8b", "#b8860b", "#daa520"], // 5 colors
+                    colorChangeRate: 25,
+                    price: 396
+                },
+                5: {
+                    name: "USER⁰⁰⁵⁷¹J¹",
+                    style: "font-size: 2.8rem; color: #ffa500; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); border-bottom: 2px solid #ffa500; padding-bottom: 5px;",
+                    badgeClass: "vvip",
+                    shape: "canvas-shape-star",
+                    colors: ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#0000ff", "#4b0082", "#8b00ff"], // 7 colors (rainbow)
+                    colorChangeRate: 15,
+                    price: 495
+                }
+            };
+            
+            // Initialize with level 1 signature
+            updateSignatureDisplay(currentLevel);
+            updatePortalInfo();
+            
+            // Set canvas size and shape
+            function setupCanvas() {
+                const size = 350;
+                signatureCanvas.width = size;
+                signatureCanvas.height = size;
+                
+                // Clear canvas
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+                
+                // Set drawing style
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.lineWidth = 3;
+                
+                // Apply shape class
+                canvasContainer.className = 'canvas-container';
+                canvasContainer.classList.add(signatureStyles[currentLevel].shape);
+                
+                // Update color indicator
+                updateColorIndicator();
+            }
+            
+            setupCanvas();
+            
+            // Update color indicator
+            function updateColorIndicator() {
+                colorIndicator.innerHTML = '';
+                const colors = signatureStyles[currentLevel].colors;
+                
+                colors.forEach(color => {
+                    const dot = document.createElement('div');
+                    dot.className = 'color-dot';
+                    dot.style.backgroundColor = color;
+                    colorIndicator.appendChild(dot);
+                });
+            }
+            
+            // Update portal information
+            function updatePortalInfo() {
+                portalLevel.textContent = `${currentLevel} Stamp Holder`;
+                portalInvestment.textContent = `$${signatureStyles[currentLevel].price}`;
+                portalSignatures.textContent = storedSignaturesCount;
+            }
+            
+            // Add event listeners to level cards
+            levelCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove active class from all cards
+                    levelCards.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked card
+                    this.classList.add('active');
+                    
+                    // Get the level from data attribute
+                    currentLevel = parseInt(this.getAttribute('data-level'));
+                    
+                    // Update signature display
+                    updateSignatureDisplay(currentLevel);
+                    
+                    // Update portal info
+                    updatePortalInfo();
+                    
+                    // Update canvas if drawing area is visible
+                    if (drawingArea.style.display === 'flex') {
+                        setupCanvas();
+                    }
+                });
+            });
+            
+            // Draw signature button
+            drawBtn.addEventListener('click', function() {
+                drawingArea.style.display = 'flex';
+                setupCanvas();
+            });
+            
+            // Canvas drawing functionality
+            signatureCanvas.addEventListener('mousedown', startDrawing);
+            signatureCanvas.addEventListener('touchstart', startDrawingTouch);
+            
+            signatureCanvas.addEventListener('mousemove', draw);
+            signatureCanvas.addEventListener('touchmove', drawTouch);
+            
+            signatureCanvas.addEventListener('mouseup', stopDrawing);
+            signatureCanvas.addEventListener('touchend', stopDrawing);
+            
+            signatureCanvas.addEventListener('mouseout', stopDrawing);
+            
+            function startDrawing(e) {
+                isDrawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+                
+                // Start with first color
+                colorIndex = 0;
+                ctx.strokeStyle = signatureStyles[currentLevel].colors[colorIndex];
+                colorChangeCounter = 0;
+            }
+            
+            function startDrawingTouch(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = signatureCanvas.getBoundingClientRect();
+                isDrawing = true;
+                [lastX, lastY] = [touch.clientX - rect.left, touch.clientY - rect.top];
+                
+                // Start with first color
+                colorIndex = 0;
+                ctx.strokeStyle = signatureStyles[currentLevel].colors[colorIndex];
+                colorChangeCounter = 0;
+            }
+            
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                // Change color based on drawing distance
+                colorChangeCounter++;
+                if (colorChangeCounter >= signatureStyles[currentLevel].colorChangeRate) {
+                    colorIndex = (colorIndex + 1) % signatureStyles[currentLevel].colors.length;
+                    ctx.strokeStyle = signatureStyles[currentLevel].colors[colorIndex];
+                    colorChangeCounter = 0;
+                }
+                
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            }
+            
+            function drawTouch(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = signatureCanvas.getBoundingClientRect();
+                
+                // Change color based on drawing distance
+                colorChangeCounter++;
+                if (colorChangeCounter >= signatureStyles[currentLevel].colorChangeRate) {
+                    colorIndex = (colorIndex + 1) % signatureStyles[currentLevel].colors.length;
+                    ctx.strokeStyle = signatureStyles[currentLevel].colors[colorIndex];
+                    colorChangeCounter = 0;
+                }
+                
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                ctx.stroke();
+                [lastX, lastY] = [touch.clientX - rect.left, touch.clientY - rect.top];
+            }
+            
+            function stopDrawing() {
+                isDrawing = false;
+            }
+            
+            // Clear canvas
+            clearCanvasBtn.addEventListener('click', function() {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+            });
+            
+            // Save signature button - now opens payment modal
+            saveSignatureBtn.addEventListener('click', function() {
+                // Check if canvas has any drawing
+                const imageData = ctx.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height);
+                const isEmpty = !imageData.data.some(channel => channel !== 255);
+                
+                if (isEmpty) {
+                    alert('Please draw a signature before sending.');
+                    return;
+                }
+                
+                // Show payment modal
+                paymentModal.style.display = 'flex';
+                paymentKeyInput.value = '';
+                confirmKeyInput.value = '';
+            });
+            
+            // Cancel payment
+            cancelPaymentBtn.addEventListener('click', function() {
+                paymentModal.style.display = 'none';
+            });
+            
+            // Confirm payment and send signature
+            confirmPaymentBtn.addEventListener('click', function() {
+                const paymentKey = paymentKeyInput.value.trim();
+                const confirmKey = confirmKeyInput.value.trim();
+                
+                if (!paymentKey) {
+                    alert('Please enter your Payment-Key-DescBse code.');
+                    return;
+                }
+                
+                if (paymentKey !== confirmKey) {
+                    alert('Payment keys do not match. Please confirm your key.');
+                    return;
+                }
+                
+                // Close payment modal and show loading
+                paymentModal.style.display = 'none';
+                loadingModal.style.display = 'flex';
+                loadingSpinner.style.display = 'block';
+                
+                // Simulate sending process
+                setTimeout(function() {
+                    // Hide loading modal
+                    loadingModal.style.display = 'none';
+                    loadingSpinner.style.display = 'none';
+                    
+                    // Save the signature
+                    saveSignatureToStorage();
+                    
+                    // Show success message
+                    showNotification('Signature successfully sent to your portal!', 'success');
+                }, 3000);
+            });
+            
+            // Save signature to storage
+            function saveSignatureToStorage() {
+                // Convert canvas to data URL
+                const dataURL = signatureCanvas.toDataURL();
+                
+                // Create stored signature element
+                const storedSignature = document.createElement('div');
+                storedSignature.className = 'stored-signature';
+                storedSignature.innerHTML = `
+                    <div class="level-badge ${signatureStyles[currentLevel].badgeClass}">Level ${currentLevel}</div>
+                    <img src="${dataURL}" alt="Stored Signature" style="max-width: 100%; max-height: 50px;">
+                    <div style="font-size: 0.8rem; margin-top: 5px;">Click to apply</div>
+                `;
+                
+                // Add click event to apply this signature
+                storedSignature.addEventListener('click', function() {
+                    appliedSignature.innerHTML = `<img src="${dataURL}" alt="Applied Signature" style="max-height: 60px;">`;
+                    documentSignaturePlaceholder.style.display = 'none';
+                    appliedSignature.style.display = 'block';
+                    
+                    // Show success message
+                    showNotification('Signature applied to document!', 'success');
+                });
+                
+                // Add to storage
+                signatureStorage.appendChild(storedSignature);
+                
+                // Update stored signatures count
+                storedSignaturesCount++;
+                updatePortalInfo();
+                
+                // Clear canvas and hide drawing area
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+                drawingArea.style.display = 'none';
+            }
+            
+            // Apply signature button
+            applyBtn.addEventListener('click', function() {
+                const signature = signatureDisplay.innerHTML;
+                if (signature && signature !== 'Select a signature level to preview') {
+                    appliedSignature.innerHTML = signature;
+                    appliedSignature.style.display = 'block';
+                    documentSignaturePlaceholder.style.display = 'none';
+                    
+                    // Show success message
+                    showNotification('Signature applied to document!', 'success');
+                } else {
+                    showNotification('Please select a signature level first.', 'error');
+                }
+            });
+            
+            // Clear signature
+            clearBtn.addEventListener('click', function() {
+                signatureDisplay.innerHTML = 'Select a signature level to preview';
+                appliedSignature.innerHTML = '';
+                appliedSignature.style.display = 'none';
+                documentSignaturePlaceholder.style.display = 'block';
+                
+                // Clear canvas if drawing area is visible
+                if (drawingArea.style.display === 'flex') {
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+                }
+            });
+            
+            // Function to update signature display
+            function updateSignatureDisplay(level) {
+                const signature = signatureStyles[level];
+                signatureDisplay.innerHTML = `<span style="${signature.style}">${signature.name}</span>`;
+            }
+            
+            // Function to show notification
+            function showNotification(message, type) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.position = 'fixed';
+                notification.style.top = '20px';
+                notification.style.right = '20px';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '8px';
+                notification.style.color = 'white';
+                notification.style.fontWeight = 'bold';
+                notification.style.zIndex = '1000';
+                notification.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                notification.style.transition = 'all 0.3s ease';
+                
+                if (type === 'success') {
+                    notification.style.backgroundColor = '#38a169';
+                } else {
+                    notification.style.backgroundColor = '#e53e3e';
+                }
+                
+                // Add to page
+                document.body.appendChild(notification);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
