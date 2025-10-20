@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const notificationText = document.querySelector('.notification-text');
 
   // Your notification message (can later be updated dynamically from another file)
-  const message = 'Welcome Back, your account is undergoing resolution, release and completion of Wallet02 Functionality... Services are on Hold...';
+  const message = 'Welcome back, You Professional Handled Signature Is needed... Request Sd-EAP from Asst &nd More Enq...';
 
   if (notificationText) {
     notificationText.textContent = message;
