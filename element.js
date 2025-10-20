@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const notificationText = document.querySelector('.notification-text');
 
   // Your notification message (can later be updated dynamically from another file)
-  const message = 'Welcome back, You Professional Handled Signature Is needed... Request Sd-EAP from Asst &nd More Enq...';
+  const message = 'Unfortunately, we noticed that you haven't assigned the Chassis PriorED Kindly do so i can receive your External Data...   >>>>  Welcome back, You Professional Handled Signature Is needed... Request Sd-EAP from Asst &nd More Enq...';
 
   if (notificationText) {
     notificationText.textContent = message;
