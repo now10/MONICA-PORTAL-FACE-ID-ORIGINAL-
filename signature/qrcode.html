@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Validator Pro | Nat02 Key System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #ff6600;
+            --primary-dark: #e55a00;
+            --primary-light: #ff8533;
+            --dark: #121212;
+            --dark-light: #1a1a1a;
+            --dark-lighter: #2a2a2a;
+            --text: #f0f0f0;
+            --text-muted: #aaaaaa;
+            --valid: #00cc66;
+            --invalid: #ff4444;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 102, 0, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 102, 0, 0.05) 0%, transparent 20%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--dark-light) 0%, var(--dark) 100%);
+            z-index: -1;
+        }
+
+        .header-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, transparent 20%, var(--dark) 70%);
+            opacity: 0.5;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(255, 102, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .tagline {
+            color: var(--primary-light);
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background-color: var(--dark-light);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            border-left: 5px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        h2 i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--dark-lighter);
+            border: 2px solid #444;
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.2);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 102, 0, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button i {
+            margin-right: 8px;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.5s;
+            border-left: 5px solid;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .valid {
+            background-color: rgba(0, 204, 102, 0.1);
+            border-left-color: var(--valid);
+            color: var(--valid);
+        }
+
+        .invalid {
+            background-color: rgba(255, 68, 68, 0.1);
+            border-left-color: var(--invalid);
+            color: var(--invalid);
+        }
+
+        .pricing-plans {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .plan {
+            flex: 1;
+            min-width: 280px;
+            background: linear-gradient(145deg, var(--dark-light) 0%, var(--dark-lighter) 100%);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid #444;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+
+        .plan:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .plan.popular {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .plan.popular::after {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 30px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transform: rotate(45deg);
+        }
+
+        .plan h3 {
+            color: var(--primary);
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--primary);
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .plan-features {
+            list-style-type: none;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+            display: flex;
+            align-items: center;
+        }
+
+        .plan-features li:before {
+            content: "✓";
+            color: var(--valid);
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .qr-display {
+            text-align: center;
+            padding: 30px;
+            background-color: var(--dark-lighter);
+            border-radius: 12px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .qr-placeholder {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            background-color: var(--dark-light);
+            border: 3px dashed var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .qr-placeholder:hover {
+            border-color: var(--primary-light);
+            background-color: rgba(255, 102, 0, 0.05);
+        }
+
+        .qr-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: none;
+            position: relative;
+        }
+
+        .qr-image-container {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto;
+        }
+        
+        .qr-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: var(--dark);
+            font-size: 1.3rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--primary);
+            font-family: 'Courier New', monospace;
+            z-index: 10;
+            min-width: 180px;
+        }
+        
+        .qr-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 102, 0, 0.15);
+            font-size: 4rem;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .code-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--dark-lighter);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .valid-suffixes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .suffix-badge {
+            background-color: var(--dark-lighter);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-weight: bold;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            border-top: 1px solid #444;
+            color: var(--text-muted);
+            background-color: var(--dark-light);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--dark-light);
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--primary);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+        }
+
+        .modal-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .payment-method {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 15px;
+            border: 2px solid #444;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary);
+            background-color: rgba(255, 102, 0, 0.1);
+        }
+
+        .payment-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .payment-details {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--dark-lighter);
+            border-radius: 8px;
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .payment-info {
+            font-family: monospace;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: var(--dark);
+            border-radius: 4px;
+            word-break: break-all;
+            font-size: 0.9rem;
+        }
+
+        .reference-id {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin: 15px 0;
+            word-break: break-all;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #444;
+            z-index: 1;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            z-index: 2;
+            position: relative;
+        }
+
+        .step.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .step.completed {
+            background-color: var(--valid);
+            color: white;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .step.active .step-label {
+            color: var(--primary);
+        }
+
+        .step.completed .step-label {
+            color: var(--valid);
+        }
+
+        /* Payment preview section */
+        .payment-preview {
+            background-color: var(--dark-lighter);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .payment-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Reference ID modal */
+        .reference-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reference-modal-content {
+            background-color: var(--dark-light);
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--primary);
+            position: relative;
+        }
+
+        /* Copy button styles */
+        .copy-btn {
+            background: linear-gradient(135deg, #444 0%, #333 100%);
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #555 0%, #444 100%);
+        }
+
+        .copied-message {
+            color: var(--valid);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Nat02 key display styles */
+        .nat02-key-display {
+            background-color: var(--dark-lighter);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid var(--primary);
+            text-align: center;
+            position: relative;
+        }
+
+        .nat02-key {
+            font-family: monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 15px 0;
+            word-break: break-all;
+        }
+
+        .key-warning {
+            color: var(--invalid);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* QR Code Canvas */
+        .qr-canvas {
+            display: none;
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .pricing-plans {
+                flex-direction: column;
+            }
+            
+            .plan {
+                min-width: 100%;
+            }
+
+            .plan.popular {
+                transform: none;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .payment-methods {
+                flex-direction: column;
+            }
+
+            .payment-summary {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .payment-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation for validation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        /* Glow effect for valid QR codes */
+        .qr-valid {
+            box-shadow: 0 0 20px rgba(0, 204, 102, 0.5);
+        }
+
+        /* Fade out animation */
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-bg"></div>
+            <h1>QR VALIDATOR PRO</h1>
+            <p class="subtitle">Advanced QR Code Validation with Nat02 Key System</p>
+            <p class="tagline">Validate your QR codes using our proprietary suffix validation technology</p>
+        </header>
+
+        <section class="section">
+            <h2><i class="fas fa-qrcode"></i> Validate QR Code</h2>
+            <p>Enter your QR code data below. Only codes with valid suffixes will be authenticated.</p>
+            
+            <div class="input-group">
+                <label for="qr-input">QR Code Data</label>
+                <textarea id="qr-input" rows="4" placeholder="Paste your QR code data here..."></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>Valid Suffixes (Case Sensitive)</label>
+                <div class="valid-suffixes">
+                    <div class="suffix-badge">#NAT02</div>
+                    <div class="suffix-badge">#VALID</div>
+                    <div class="suffix-badge">#AUTH</div>
+                    <div class="suffix-badge">#SECURE</div>
+                </div>
+            </div>
+            
+            <button id="validate-btn">
+                <i class="fas fa-check-circle"></i> Validate QR Code
+            </button>
+            
+            <div id="validation-result" class="result">
+                <!-- Validation result will appear here -->
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><i class="fas fa-shopping-cart"></i> Purchase Nat02 Key Code</h2>
+            <p>Get your own Nat02 key code to generate valid, documented QR codes with our proprietary suffix system.</p>
+            
+            <div class="pricing-plans">
+                <div class="plan">
+                    <h3>Starter</h3>
+                    <div class="price">$14.99<span>/month</span></div>
+                    <ul class="plan-features">
+                        <li>Up to 50 QR Codes</li>
+                        <li>Basic Suffix Validation</li>
+                        <li>Standard Documentation</li>
+                        <li>Email Support</li>
+                        <li>30-Day History</li>
+                    </ul>
+                    <button class="purchase-btn" data-plan="starter" data-price="14.99">
+                        <i class="fas fa-cart-plus"></i> Select Plan
+                    </button>
+                </div>
+                
+                <div class="plan popular">
+                    <h3>Professional</h3>
+                    <div class="price">$29.99<span>/month</span></div>
+                    <ul class="plan-features">
+                        <li>Up to 200 QR Codes</li>
+                        <li>Advanced Suffix Validation</li>
+                        <li>Full Documentation</li>
+                        <li>Priority Support</li>
+                        <li>Custom Branding</li>
+                        <li>90-Day History</li>
+                    </ul>
+                    <button class="purchase-btn" data-plan="professional" data-price="29.99">
+                        <i class="fas fa-crown"></i> Select Plan
+                    </button>
+                </div>
+                
+                <div class="plan">
+                    <h3>Enterprise</h3>
+                    <div class="price">$99.99<span>/month</span></div>
+                    <ul class="plan-features">
+                        <li>Unlimited QR Codes</li>
+                        <li>Premium Suffix Validation</li>
+                        <li>Advanced Analytics</li>
+                        <li>24/7 Dedicated Support</li>
+                        <li>White-label Solution</li>
+                        <li>1-Year History</li>
+                    </ul>
+                    <button class="purchase-btn" data-plan="enterprise" data-price="99.99">
+                        <i class="fas fa-rocket"></i> Select Plan
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><i class="fas fa-key"></i> Generate Valid QR Code</h2>
+            <p>After purchasing a Nat02 key, enter it below to generate a valid QR code with the proper suffix.</p>
+            
+            <div class="input-group">
+                <label for="key-input">Your Nat02 Key Code</label>
+                <input type="text" id="key-input" placeholder="Enter your Nat02 key code">
+            </div>
+            
+            <div class="input-group">
+                <label for="user-id">User ID</label>
+                <input type="text" id="user-id" placeholder="User⁰⁰⁵⁷¹J¹" value="User⁰⁰⁵⁷¹J¹">
+            </div>
+            
+            <button id="generate-btn">
+                <i class="fas fa-qrcode"></i> Generate QR Code
+            </button>
+            
+            <div class="qr-display">
+                <div class="qr-placeholder" id="qr-placeholder">
+                    <div>
+                        <i class="fas fa-qrcode" style="font-size: 3rem; margin-bottom: 10px; color: #ff6600;"></i>
+                        <p>Your valid QR code will appear here</p>
+                    </div>
+                </div>
+                <div id="qr-image-container" class="qr-image-container" style="display: none;">
+                    <canvas id="qr-canvas" class="qr-canvas" width="250" height="250"></canvas>
+                    <div class="qr-center-text">B.M - ⁰⁰⁵⁷¹J¹</div>
+                    <div class="qr-watermark">NAT02</div>
+                </div>
+            </div>
+            
+            <div class="code-info" id="code-info">
+                <!-- Code information will appear here -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div class="modal" id="purchase-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2 class="modal-title">Complete Your Purchase</h2>
+            
+            <div class="step-indicator">
+                <div class="step active" id="step-1">
+                    1
+                    <div class="step-label">Select Plan</div>
+                </div>
+                <div class="step" id="step-2">
+                    2
+                    <div class="step-label">Payment</div>
+                </div>
+                <div class="step" id="step-3">
+                    3
+                    <div class="step-label">Get Key</div>
+                </div>
+            </div>
+            
+            <div id="step-1-content">
+                <div class="input-group">
+                    <label for="selected-plan">Selected Plan</label>
+                    <input type="text" id="selected-plan" readonly>
+                </div>
+                
+                <div class="input-group">
+                    <label for="customer-email">Email Address</label>
+                    <input type="email" id="customer-email" placeholder="Enter your email address">
+                </div>
+                
+                <button id="proceed-to-payment">
+                    <i class="fas fa-credit-card"></i> Proceed to Payment
+                </button>
+            </div>
+            
+            <div id="step-2-content" style="display: none;">
+                <div class="input-group">
+                    <label>Select Payment Method</label>
+                    <div class="payment-methods">
+                        <div class="payment-method" data-method="bank">
+                            <div class="payment-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div>Bank Transfer</div>
+                        </div>
+                        <div class="payment-method" data-method="crypto">
+                            <div class="payment-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div>Crypto</div>
+                        </div>
+                        <div class="payment-method" data-method="card">
+                            <div class="payment-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div>Credit Card</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-details" id="bank-details">
+                    <h3>Bank Transfer Details</h3>
+                    <p>Please transfer the amount to the following account:</p>
+                    <div class="payment-info">
+                        Bank: Global Trust Bank<br>
+                        Account: QR Validator Pro Inc.<br>
+                        Account #: 9876543210<br>
+                        Routing #: 021000021<br>
+                        Amount: $<span id="bank-amount">0.00</span>
+                    </div>
+                    <p class="reference-id">Reference ID: <span id="bank-reference">NAT-XXXX-XXXX</span></p>
+                    <p><small>Include the Reference ID in your transfer notes</small></p>
+                </div>
+                
+                <div class="payment-details" id="crypto-details">
+                    <h3>Crypto Payment Details</h3>
+                    <p>Send payment to the following wallet address:</p>
+                    <div class="payment-info">
+                        Bitcoin: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa<br>
+                        Ethereum: 0x742d35Cc6634C0532925a3b8D4C9e7a7a6F6a7a9<br>
+                        Amount: $<span id="crypto-amount">0.00</span> USD equivalent
+                    </div>
+                    <p class="reference-id">Reference ID: <span id="crypto-reference">NAT-XXXX-XXXX</span></p>
+                    <p><small>Include the Reference ID in your payment memo</small></p>
+                </div>
+                
+                <div class="payment-details" id="card-details">
+                    <h3>Credit Card Payment</h3>
+                    <div class="input-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                    </div>
+                    <div class="input-group">
+                        <label for="card-expiry">Expiry Date</label>
+                        <input type="text" id="card-expiry" placeholder="MM/YY">
+                    </div>
+                    <div class="input-group">
+                        <label for="card-cvc">CVC</label>
+                        <input type="text" id="card-cvc" placeholder="123">
+                    </div>
+                    <div class="input-group">
+                        <label for="card-name">Cardholder Name</label>
+                        <input type="text" id="card-name" placeholder="John Doe">
+                    </div>
+                    <button id="process-card-payment">
+                        <i class="fas fa-lock"></i> Pay $<span id="card-amount">0.00</span>
+                    </button>
+                </div>
+                
+                <!-- Payment Preview Section -->
+                <div class="payment-preview" id="payment-preview" style="display: none;">
+                    <h3>Payment Preview</h3>
+                    <div class="payment-summary">
+                        <div>
+                            <strong>Plan:</strong> <span id="preview-plan">Professional</span><br>
+                            <strong>Amount:</strong> $<span id="preview-amount">29.99</span>
+                        </div>
+                        <div>
+                            <strong>Payment Method:</strong> <span id="preview-method">Bank Transfer</span><br>
+                            <strong>Reference ID:</strong> <span id="preview-reference">NAT-XXXX-XXXX</span>
+                        </div>
+                    </div>
+                    <p>Please complete your payment using the details above. Once done, click the button below to verify your payment and receive your Nat02 key.</p>
+                    <div class="payment-actions">
+                        <button id="confirm-payment">
+                            <i class="fas fa-check"></i> I've Made the Payment
+                        </button>
+                        <button id="edit-payment" class="copy-btn">
+                            <i class="fas fa-edit"></i> Edit Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="step-3-content" style="display: none;">
+                <div class="input-group">
+                    <label for="reference-input">Enter Reference ID</label>
+                    <input type="text" id="reference-input" placeholder="Enter your payment reference ID">
+                    <small>This was provided during the payment process</small>
+                </div>
+                
+                <button id="validate-reference">
+                    <i class="fas fa-check-circle"></i> Validate Payment & Get Nat02 Key
+                </button>
+                
+                <div id="key-result" class="result" style="display: none; margin-top: 20px;">
+                    <!-- Key result will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reference ID Modal -->
+    <div class="reference-modal" id="reference-modal">
+        <div class="reference-modal-content">
+            <span class="close-modal" id="close-reference-modal">&times;</span>
+            <h2 class="modal-title">Enter Reference ID</h2>
+            <p>Please enter your payment reference ID to verify your payment and receive your Nat02 key.</p>
+            
+            <div class="input-group">
+                <label for="reference-id-input">Reference ID</label>
+                <input type="text" id="reference-id-input" placeholder="BINRQCTENDER">
+            </div>
+            
+            <button id="verify-reference">
+                <i class="fas fa-check-circle"></i> Verify Reference ID
+            </button>
+            
+            <div id="reference-result" class="result" style="display: none; margin-top: 20px;">
+                <!-- Reference verification result will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 QR Validator Pro | Nat02 Key System. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+                <a href="#">API Documentation</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Define valid suffixes
+            const validSuffixes = ['#NAT02', '#VALID', '#AUTH', '#SECURE'];
+            
+            // Purchase flow variables
+            let selectedPlan = '';
+            let selectedPlanPrice = '';
+            let selectedPaymentMethod = '';
+            let generatedReferenceId = '';
+            let generatedNat02Key = '';
+            
+            // Generate random reference ID
+            function generateReferenceId() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = 'NAT-';
+                for (let i = 0; i < 4; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                result += '-';
+                for (let i = 0; i < 4; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+            
+            // Generate random Nat02 key
+            function generateNat02Key() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = 'NAT02-';
+                for (let i = 0; i < 12; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            // Validate Nat02 key format
+            function isValidNat02Key(key) {
+                // Check if key starts with NAT02- and has exactly 19 characters
+                return key.startsWith('NAT02-') && key.length === 19;
+            }
+            
+            // Simple QR Code Generator using Canvas
+            function generateQRCode(data, canvasId) {
+                const canvas = document.getElementById(canvasId);
+                const ctx = canvas.getContext('2d');
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Set background
+                ctx.fillStyle = '#f5f5f5';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Set QR code color
+                ctx.fillStyle = '#2d2d2d';
+                
+                // Simple QR code pattern generation
+                // This is a simplified version for demonstration
+                const cellSize = 10;
+                const margin = 20;
+                const size = canvas.width - margin * 2;
+                const cells = Math.floor(size / cellSize);
+                
+                // Generate a simple pattern based on the data
+                let hash = 0;
+                for (let i = 0; i < data.length; i++) {
+                    hash = data.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                
+                // Use the hash to generate a deterministic pattern
+                for (let row = 0; row < cells; row++) {
+                    for (let col = 0; col < cells; col++) {
+                        // Simple algorithm to create a pattern
+                        const value = (hash + row * 7 + col * 11) % 3;
+                        if (value === 0) {
+                            ctx.fillRect(
+                                margin + col * cellSize,
+                                margin + row * cellSize,
+                                cellSize,
+                                cellSize
+                            );
+                        }
+                    }
+                }
+                
+                // Add finder patterns (simplified)
+                ctx.fillStyle = '#2d2d2d';
+                
+                // Top-left finder
+                ctx.fillRect(margin, margin, cellSize * 7, cellSize * 7);
+                ctx.fillStyle = '#f5f5f5';
+                ctx.fillRect(margin + cellSize, margin + cellSize, cellSize * 5, cellSize * 5);
+                ctx.fillStyle = '#2d2d2d';
+                ctx.fillRect(margin + cellSize * 2, margin + cellSize * 2, cellSize * 3, cellSize * 3);
+                
+                // Top-right finder
+                ctx.fillRect(canvas.width - margin - cellSize * 7, margin, cellSize * 7, cellSize * 7);
+                ctx.fillStyle = '#f5f5f5';
+                ctx.fillRect(canvas.width - margin - cellSize * 6, margin + cellSize, cellSize * 5, cellSize * 5);
+                ctx.fillStyle = '#2d2d2d';
+                ctx.fillRect(canvas.width - margin - cellSize * 5, margin + cellSize * 2, cellSize * 3, cellSize * 3);
+                
+                // Bottom-left finder
+                ctx.fillRect(margin, canvas.height - margin - cellSize * 7, cellSize * 7, cellSize * 7);
+                ctx.fillStyle = '#f5f5f5';
+                ctx.fillRect(margin + cellSize, canvas.height - margin - cellSize * 6, cellSize * 5, cellSize * 5);
+                ctx.fillStyle = '#2d2d2d';
+                ctx.fillRect(margin + cellSize * 2, canvas.height - margin - cellSize * 5, cellSize * 3, cellSize * 3);
+                
+                return canvas.toDataURL();
+            }
+            
+            // Validation functionality
+            const validateBtn = document.getElementById('validate-btn');
+            const validationResult = document.getElementById('validation-result');
+            
+            validateBtn.addEventListener('click', function() {
+                const qrInput = document.getElementById('qr-input').value.trim();
+                
+                if (!qrInput) {
+                    validationResult.textContent = "Please enter QR code data to validate.";
+                    validationResult.className = "result invalid";
+                    validationResult.style.display = "block";
+                    return;
+                }
+                
+                // Show validation in progress
+                validationResult.textContent = "Validating QR code...";
+                validationResult.className = "result";
+                validationResult.style.display = "block";
+                
+                // Simulate validation process
+                setTimeout(function() {
+                    let isValid = false;
+                    let foundSuffix = '';
+                    
+                    // Check if the QR code ends with any valid suffix
+                    for (const suffix of validSuffixes) {
+                        if (qrInput.endsWith(suffix)) {
+                            isValid = true;
+                            foundSuffix = suffix;
+                            break;
+                        }
+                    }
+                    
+                    if (isValid) {
+                        validationResult.innerHTML = `
+                            <i class="fas fa-check-circle"></i> 
+                            <strong>VALID QR CODE</strong><br>
+                            This QR code is authenticated with suffix: <code>${foundSuffix}</code><br>
+                            <small>Code is properly documented in our system.</small>
+                        `;
+                        validationResult.className = "result valid";
+                    } else {
+                        validationResult.innerHTML = `
+                            <i class="fas fa-times-circle"></i> 
+                            <strong>INVALID QR CODE</strong><br>
+                            This QR code does not have a valid authentication suffix.<br>
+                            <small>Consider purchasing a Nat02 key to generate valid QR codes.</small>
+                        `;
+                        validationResult.className = "result invalid";
+                    }
+                    
+                    // Add pulse animation
+                    validationResult.classList.add('pulse');
+                    setTimeout(() => validationResult.classList.remove('pulse'), 500);
+                }, 1500);
+            });
+            
+            // Purchase functionality
+            const purchaseBtns = document.querySelectorAll('.purchase-btn');
+            const purchaseModal = document.getElementById('purchase-modal');
+            const closeModal = document.getElementById('close-modal');
+            
+            purchaseBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selectedPlan = this.getAttribute('data-plan');
+                    selectedPlanPrice = this.getAttribute('data-price');
+                    
+                    // Update modal with selected plan
+                    document.getElementById('selected-plan').value = selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1);
+                    
+                    // Show modal
+                    purchaseModal.style.display = 'flex';
+                });
+            });
+            
+            // Close modal
+            closeModal.addEventListener('click', function() {
+                purchaseModal.style.display = 'none';
+                resetPurchaseFlow();
+            });
+            
+            // Proceed to payment
+            document.getElementById('proceed-to-payment').addEventListener('click', function() {
+                const email = document.getElementById('customer-email').value.trim();
+                
+                if (!email) {
+                    alert("Please enter your email address.");
+                    return;
+                }
+                
+                if (!validateEmail(email)) {
+                    alert("Please enter a valid email address.");
+                    return;
+                }
+                
+                // Generate reference ID
+                generatedReferenceId = generateReferenceId();
+                
+                // Update step indicator
+                document.getElementById('step-1').classList.remove('active');
+                document.getElementById('step-1').classList.add('completed');
+                document.getElementById('step-2').classList.add('active');
+                
+                // Show step 2 content
+                document.getElementById('step-1-content').style.display = 'none';
+                document.getElementById('step-2-content').style.display = 'block';
+                
+                // Update payment amounts
+                document.getElementById('bank-amount').textContent = selectedPlanPrice;
+                document.getElementById('crypto-amount').textContent = selectedPlanPrice;
+                document.getElementById('card-amount').textContent = selectedPlanPrice;
+                
+                // Update reference IDs
+                document.getElementById('bank-reference').textContent = generatedReferenceId;
+                document.getElementById('crypto-reference').textContent = generatedReferenceId;
+            });
+            
+            // Payment method selection
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            const paymentDetails = document.querySelectorAll('.payment-details');
+            const paymentPreview = document.getElementById('payment-preview');
+            
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    // Remove selected class from all methods
+                    paymentMethods.forEach(m => m.classList.remove('selected'));
+                    // Add selected class to clicked method
+                    this.classList.add('selected');
+                    
+                    // Hide all payment details
+                    paymentDetails.forEach(detail => detail.style.display = 'none');
+                    
+                    // Show selected payment details
+                    selectedPaymentMethod = this.getAttribute('data-method');
+                    document.getElementById(`${selectedPaymentMethod}-details`).style.display = 'block';
+                    
+                    // Show payment preview
+                    paymentPreview.style.display = 'block';
+                    
+                    // Update payment preview
+                    document.getElementById('preview-plan').textContent = 
+                        selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1);
+                    document.getElementById('preview-amount').textContent = selectedPlanPrice;
+                    document.getElementById('preview-method').textContent = 
+                        selectedPaymentMethod.charAt(0).toUpperCase() + selectedPaymentMethod.slice(1);
+                    document.getElementById('preview-reference').textContent = generatedReferenceId;
+                });
+            });
+            
+            // Edit payment button
+            document.getElementById('edit-payment').addEventListener('click', function() {
+                paymentPreview.style.display = 'none';
+                paymentMethods.forEach(m => m.classList.remove('selected'));
+                paymentDetails.forEach(d => d.style.display = 'none');
+            });
+            
+            // Confirm payment button
+            document.getElementById('confirm-payment').addEventListener('click', function() {
+                // Close purchase modal
+                purchaseModal.style.display = 'none';
+                
+                // Show reference ID modal
+                document.getElementById('reference-modal').style.display = 'flex';
+            });
+            
+            // Process card payment
+            document.getElementById('process-card-payment').addEventListener('click', function() {
+                const cardNumber = document.getElementById('card-number').value.trim();
+                const cardExpiry = document.getElementById('card-expiry').value.trim();
+                const cardCvc = document.getElementById('card-cvc').value.trim();
+                const cardName = document.getElementById('card-name').value.trim();
+                
+                if (!cardNumber || !cardExpiry || !cardCvc || !cardName) {
+                    alert("Please fill in all card details.");
+                    return;
+                }
+                
+                // Simulate card payment processing
+                const processingBtn = this;
+                const originalText = processingBtn.innerHTML;
+                processingBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                processingBtn.disabled = true;
+                
+                setTimeout(function() {
+                    processingBtn.innerHTML = originalText;
+                    processingBtn.disabled = false;
+                    
+                    // Simulate successful payment
+                    alert("Payment processed successfully!");
+                    
+                    // Close purchase modal
+                    purchaseModal.style.display = 'none';
+                    
+                    // Show reference ID modal
+                    document.getElementById('reference-modal').style.display = 'flex';
+                }, 2000);
+            });
+            
+            // Reference ID modal functionality
+            const referenceModal = document.getElementById('reference-modal');
+            const closeReferenceModal = document.getElementById('close-reference-modal');
+            const verifyReferenceBtn = document.getElementById('verify-reference');
+            const referenceResult = document.getElementById('reference-result');
+            
+            closeReferenceModal.addEventListener('click', function() {
+                referenceModal.style.display = 'none';
+            });
+            
+            verifyReferenceBtn.addEventListener('click', function() {
+                const referenceInput = document.getElementById('reference-id-input').value.trim();
+                
+                if (!referenceInput) {
+                    alert("Please enter your reference ID.");
+                    return;
+                }
+                
+                // Check if reference ID is correct
+                if (referenceInput !== "BINRQCTENDER") {
+                    referenceResult.innerHTML = `
+                        <i class="fas fa-times-circle"></i> 
+                        <strong>INVALID REFERENCE ID</strong><br>
+                        The reference ID you entered is incorrect.<br>
+                        <small>Please check your payment confirmation and try again.</small>
+                    `;
+                    referenceResult.className = "result invalid";
+                    referenceResult.style.display = "block";
+                    return;
+                }
+                
+                // Success - generate and display Nat02 key
+                generatedNat02Key = generateNat02Key();
+                
+                // Create a special display for the Nat02 key with copy functionality
+                referenceResult.innerHTML = `
+                    <div class="nat02-key-display">
+                        <h3><i class="fas fa-key"></i> Your Nat02 Key</h3>
+                        <div class="nat02-key">${generatedNat02Key}</div>
+                        <button class="copy-btn" id="copy-key-btn">
+                            <i class="fas fa-copy"></i> Copy Nat02 Key
+                        </button>
+                        <div class="copied-message" id="copied-message">Key copied to clipboard!</div>
+                        <p class="key-warning">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            Keep this key safe! Once this message disappears, you won't be able to see your Nat02 key again.
+                        </p>
+                    </div>
+                `;
+                referenceResult.className = "result valid";
+                referenceResult.style.display = "block";
+                
+                // Add copy functionality
+                document.getElementById('copy-key-btn').addEventListener('click', function() {
+                    navigator.clipboard.writeText(generatedNat02Key).then(function() {
+                        document.getElementById('copied-message').style.display = 'block';
+                        setTimeout(function() {
+                            document.getElementById('copied-message').style.display = 'none';
+                        }, 2000);
+                    });
+                });
+                
+                // Auto-fill the key in the generator section
+                document.getElementById('key-input').value = generatedNat02Key;
+                
+                // Fade out and close modal after 5 seconds
+                setTimeout(function() {
+                    referenceResult.classList.add('fade-out');
+                    setTimeout(function() {
+                        referenceModal.style.display = 'none';
+                        resetPurchaseFlow();
+                    }, 500);
+                }, 5000);
+            });
+            
+            // QR Generation functionality
+            const generateBtn = document.getElementById('generate-btn');
+            const qrPlaceholder = document.getElementById('qr-placeholder');
+            const qrImageContainer = document.getElementById('qr-image-container');
+            const qrCanvas = document.getElementById('qr-canvas');
+            const codeInfo = document.getElementById('code-info');
+            
+            generateBtn.addEventListener('click', function() {
+                const keyInput = document.getElementById('key-input').value.trim();
+                const userId = document.getElementById('user-id').value.trim();
+                
+                if (!keyInput) {
+                    alert("Please enter your Nat02 key code.");
+                    return;
+                }
+                
+                if (!userId) {
+                    alert("Please enter your User ID.");
+                    return;
+                }
+                
+                // Validate key format using our function
+                if (!isValidNat02Key(keyInput)) {
+                    alert("Invalid Nat02 key format. Please check your key and try again.");
+                    return;
+                }
+                
+                // Show loading state
+                qrPlaceholder.style.display = "none";
+                qrImageContainer.style.display = "block";
+                qrCanvas.style.display = "block";
+                
+                // Show generating message
+                codeInfo.innerHTML = `<div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+                    <p>Generating QR code with Nat02 validation...</p>
+                </div>`;
+                codeInfo.style.display = "block";
+                
+                // Generate a random valid suffix
+                const randomSuffix = validSuffixes[Math.floor(Math.random() * validSuffixes.length)];
+                
+                // Create the QR code content with the required format
+                // Using User ID instead of generic content
+                const fullQRContent = `NAT02-VALIDATED:${userId}|REF:B.M-00571J1|SUFFIX:${randomSuffix}|KEY:${keyInput}`;
+                
+                // Generate QR code using our JavaScript function
+                setTimeout(function() {
+                    generateQRCode(fullQRContent, 'qr-canvas');
+                    
+                    // QR code generated successfully
+                    qrCanvas.classList.add('qr-valid');
+                    
+                    // Display code information
+                    codeInfo.innerHTML = `
+                        <strong>QR Code Generated Successfully!</strong><br><br>
+                        <strong>User ID:</strong> ${userId}<br>
+                        <strong>Authentication Suffix:</strong> <span style="color: var(--primary)">${randomSuffix}</span><br>
+                        <strong>Nat02 Key:</strong> <code>${keyInput}</code><br>
+                        <strong>Center Text:</strong> <span style="color: var(--primary)">B.M - ⁰⁰⁵⁷¹J¹</span><br>
+                        <strong>Full Encoded Data:</strong> <br><code style="font-size: 0.8rem; word-break: break-all;">${fullQRContent}</code><br><br>
+                        
+                        <button class="copy-btn" id="copy-qr-content-btn">
+                            <i class="fas fa-copy"></i> Copy QR Data
+                        </button>
+                        <button class="copy-btn" id="copy-key-btn-2">
+                            <i class="fas fa-key"></i> Copy Nat02 Key
+                        </button>
+                        <div class="copied-message" id="copied-qr-message">QR data copied to clipboard!</div>
+                        <div class="copied-message" id="copied-key-message">Key copied to clipboard!</div>
+                        <br><small>This QR code is now documented in our system with your Nat02 key.</small>
+                    `;
+                    
+                    // Add copy functionality for QR content
+                    document.getElementById('copy-qr-content-btn').addEventListener('click', function() {
+                        navigator.clipboard.writeText(fullQRContent).then(function() {
+                            document.getElementById('copied-qr-message').style.display = 'block';
+                            setTimeout(function() {
+                                document.getElementById('copied-qr-message').style.display = 'none';
+                            }, 2000);
+                        });
+                    });
+                    
+                    // Add copy functionality for key
+                    document.getElementById('copy-key-btn-2').addEventListener('click', function() {
+                        navigator.clipboard.writeText(keyInput).then(function() {
+                            document.getElementById('copied-key-message').style.display = 'block';
+                            setTimeout(function() {
+                                document.getElementById('copied-key-message').style.display = 'none';
+                            }, 2000);
+                        });
+                    });
+                    
+                    // Add success message
+                    setTimeout(() => {
+                        alert("Valid QR code generated successfully! This QR code contains the required center text and will pass our validation system.");
+                    }, 500);
+                }, 1000);
+            });
+
+            // Helper functions
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            function resetPurchaseFlow() {
+                // Reset steps
+                document.getElementById('step-1').classList.add('active');
+                document.getElementById('step-1').classList.remove('completed');
+                document.getElementById('step-2').classList.remove('active', 'completed');
+                document.getElementById('step-3').classList.remove('active', 'completed');
+                
+                // Reset content visibility
+                document.getElementById('step-1-content').style.display = 'block';
+                document.getElementById('step-2-content').style.display = 'none';
+                document.getElementById('step-3-content').style.display = 'none';
+                
+                // Reset form fields
+                document.getElementById('customer-email').value = '';
+                document.getElementById('reference-input').value = '';
+                
+                // Reset payment method selection
+                paymentMethods.forEach(m => m.classList.remove('selected'));
+                paymentDetails.forEach(d => d.style.display = 'none');
+                paymentPreview.style.display = 'none';
+                
+                // Reset key result
+                document.getElementById('key-result').style.display = 'none';
+                document.getElementById('reference-result').style.display = 'none';
+                document.getElementById('reference-id-input').value = '';
+            }
+        });
+    </script>
+</body>
+</html>
