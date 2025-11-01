@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAT02 QR Code Generator</title>
+
+<!-- Reliable library that works offline/locally -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .container {
+        max-width: 900px;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        padding: 2.5rem;
+        animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    h1 {
+        color: #1a2a6c;
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-section, .retrieve-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        font-weight: 600;
+        color: #1a2a6c;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    input:focus {
+        border-color: #1a2a6c;
+        outline: none;
+    }
+
+    .btn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background-color: #1a2a6c;
+        color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background-color: #0d1a4a;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background-color: #fdbb2d;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background-color: #f5a300;
+        transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+    .qr-container {
+        text-align: center;
+        padding: 1.5rem;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin: 2rem 0;
+    }
+
+    canvas {
+        border-radius: 8px;
+        margin: 1rem 0;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        opacity: 0;
+        transition: opacity 1s ease;
+        max-width: 100%;
+        height: auto;
+    }
+
+    .fade-in {
+        opacity: 1 !important;
+    }
+
+    .spinner {
+        border: 5px solid #eee;
+        border-top: 5px solid #1a2a6c;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 1rem auto;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+        color: #1a2a6c;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .generated-code, .success-message {
+        font-family: 'Courier New', monospace;
+        font-size: 1rem;
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .generated-code {
+        color: #b21f1f;
+        background-color: #f8f9fa;
+        padding: 0.8rem;
+        border-radius: 6px;
+    }
+
+    .success-message {
+        color: #28a745;
+        font-weight: 600;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    footer {
+        text-align: center;
+        color: rgba(255,255,255,0.8);
+        margin-top: 2rem;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+        .container { padding: 1.5rem; }
+        h1 { font-size: 1.7rem; }
+        input, .btn { width: 100%; }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>NAT02 QR Code Generator</h1>
+        <p class="subtitle">Secure QR code generation with NAT02 authentication</p>
+    </header>
+
+    <div class="auth-section">
+        <h2>Authentication Required</h2>
+        <p>Enter your NAT02 code to generate a QR code.</p>
+        <div class="form-group">
+            <label for="nat02-code">NAT02 Code:</label>
+            <input type="text" id="nat02-code" placeholder="Enter NAT02 code">
+            <div id="code-error" class="error-message"></div>
+        </div>
+        <button id="generate-btn" class="btn btn-primary">Generate QR Code</button>
+
+        <div id="loading" style="display:none;">
+            <div class="spinner"></div>
+            <p class="loading-text">Generating QR Code... Please wait</p>
+        </div>
+    </div>
+
+    <div class="qr-container">
+        <canvas id="qrcodeCanvas"></canvas>
+        <div id="generated-code" class="generated-code"></div>
+        <div id="success-message" class="success-message"></div>
+    </div>
+
+    <div class="retrieve-section">
+        <h2>Retrieve QR Code</h2>
+        <p>Enter your generated code to reload the QR.</p>
+        <div class="form-group">
+            <label for="retrieve-code">QR Code:</label>
+            <input type="text" id="retrieve-code" placeholder="Enter Generated Code">
+        </div>
+        <button id="retrieve-btn" class="btn btn-secondary">Retrieve QR Data</button>
+
+        <div id="retrieved-qr-container" style="display:none; text-align:center; margin-top:1.5rem;">
+            <canvas id="retrievedCanvas"></canvas>
+        </div>
+    </div>
+
+    <footer>
+        <p>NAT02 QR Code Generator | Secure Authentication System</p>
+    </footer>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const REQUIRED_NAT02_CODE = "NAT02-ẞINRCTENDER";
+    const GENERATED_QR_VALUE = "#-DNQRCßXOẞdxË";
+
+    const nat02Input = document.getElementById('nat02-code');
+    const generateBtn = document.getElementById('generate-btn');
+    const loadingDiv = document.getElementById('loading');
+    const qrcodeCanvas = document.getElementById('qrcodeCanvas');
+    const codeError = document.getElementById('code-error');
+    const generatedCode = document.getElementById('generated-code');
+    const successMessage = document.getElementById('success-message');
+    const retrieveInput = document.getElementById('retrieve-code');
+    const retrieveBtn = document.getElementById('retrieve-btn');
+    const retrievedContainer = document.getElementById('retrieved-qr-container');
+    const retrievedCanvas = document.getElementById('retrievedCanvas');
+
+    // Generate QR with delay
+    generateBtn.onclick = () => {
+        const entered = nat02Input.value.trim();
+        if (entered !== REQUIRED_NAT02_CODE) {
+            codeError.textContent = "Invalid NAT02 code. Please enter the correct code.";
+            return;
+        }
+        codeError.textContent = "";
+        generateBtn.disabled = true;
+        loadingDiv.style.display = "block";
+        qrcodeCanvas.classList.remove('fade-in');
+        generatedCode.textContent = "";
+        successMessage.textContent = "";
+
+        setTimeout(() => {
+            loadingDiv.style.display = "none";
+            const qr = new QRious({
+                element: qrcodeCanvas,
+                value: GENERATED_QR_VALUE,
+                size: 250,
+                background: "white",
+                foreground: "black"
+            });
+            qrcodeCanvas.classList.add('fade-in');
+            generatedCode.textContent = `Generated Code: ${GENERATED_QR_VALUE}`;
+            successMessage.textContent = "QR Code successfully generated!";
+            localStorage.setItem("nat02Code", GENERATED_QR_VALUE);
+            generateBtn.disabled = false;
+        }, 2500);
+    };
+
+    // Retrieve QR
+    retrieveBtn.onclick = () => {
+        const entered = retrieveInput.value.trim();
+        if (entered === localStorage.getItem("nat02Code")) {
+            retrievedContainer.style.display = "block";
+            new QRious({
+                element: retrievedCanvas,
+                value: entered,
+                size: 250
+            });
+        } else {
+            alert("Invalid or non-existent code. Generate a QR first.");
+        }
+    };
+
+    // Auto-load if stored
+    const stored = localStorage.getItem("nat02Code");
+    if (stored) {
+        new QRious({ element: qrcodeCanvas, value: stored, size: 250 });
+        qrcodeCanvas.classList.add('fade-in');
+        generatedCode.textContent = `Generated Code: ${stored}`;
+        successMessage.textContent = "QR Code loaded from storage.";
+    }
+});
+</script>
+</body>
+</html>
