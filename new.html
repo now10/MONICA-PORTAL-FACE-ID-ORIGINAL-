@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Restricted | Wallet02</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #4dabf7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 2.8rem;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #ff6b6b;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .restriction-box {
+            background-color: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid #ff6b6b;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .restriction-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .restriction-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .icon {
+            margin-right: 12px;
+            font-size: 1.5rem;
+            color: #ff6b6b;
+            min-width: 24px;
+        }
+        
+        .contact-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .contact-info p {
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #4dabf7;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: #339af0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <span class="logo-icon">₿</span>
+            <span>Wallet02</span>
+        </div>
+        
+        <h1>Access Restricted</h1>
+        
+        <p class="subtitle">Your access to this account and dashboard has been limited due to licensing restrictions.</p>
+        
+        <div class="restriction-box">
+            <div class="restriction-item">
+                <div class="icon">⛔</div>
+                <div>
+                    <strong>Account Access</strong>
+                    <p>Your Wallet02 account is currently restricted. You cannot access your funds or transaction history.</p>
+                </div>
+            </div>
+            
+            <div class="restriction-item">
+                <div class="icon">🚫</div>
+                <div>
+                    <strong>Dashboard Off Limits</strong>
+                    <p>The Wallet02 dashboard is unavailable. All administrative and management functions are disabled.</p>
+                </div>
+            </div>
+            
+            <div class="restriction-item">
+                <div class="icon">📄</div>
+                <div>
+                    <strong>Licensing Issues</strong>
+                    <p>There are unresolved licensing matters preventing full access to your Wallet02 services.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="contact-info">
+            <p>If you believe this is an error or need to resolve licensing issues:</p>
+            <p>Email: <strong>support@wallet02.com</strong></p>
+            <p>Phone: <strong>1-800-WALLET02</strong></p>
+            
+            <button class="btn">Contact Support</button>
+        </div>
+        
+        <div class="footer">
+            &copy; 2023 Wallet02 Financial Services. All rights reserved.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.querySelector('.btn');
+            btn.addEventListener('click', function() {
+                alert('Please email support@wallet02.com or call 1-800-WALLET02 for assistance.');
+            });
+        });
+    </script>
+</body>
+</html>
