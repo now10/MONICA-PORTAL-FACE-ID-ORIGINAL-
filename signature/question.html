@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal Setup - 5-Step Configuration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #f8ff00 0%, #3ad59f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #f8ff00 0%, #3ad59f 100%);
+            width: 20%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .step.active {
+            background: #3ad59f;
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(58, 213, 159, 0.5);
+        }
+
+        .step.completed {
+            background: #f8ff00;
+            color: #1a2980;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .step.active .step-label {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .question-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideIn 0.8s ease-out;
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .question-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #f8ff00 0%, #3ad59f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #1a2980;
+        }
+
+        .question-text {
+            flex: 1;
+        }
+
+        .question-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: #f8ff00;
+        }
+
+        .question-text p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .option.selected {
+            background: rgba(58, 213, 159, 0.2);
+            border-color: #3ad59f;
+            box-shadow: 0 0 15px rgba(58, 213, 159, 0.3);
+        }
+
+        .option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .option.selected .option-icon {
+            background: #3ad59f;
+            color: #1a2980;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .option-text h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .option-text p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .input-container {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .input-group input, .input-group select {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: #3ad59f;
+            box-shadow: 0 0 10px rgba(58, 213, 159, 0.5);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(to right, #f8ff00 0%, #3ad59f 100%);
+            color: #1a2980;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .success-message {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-message i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            color: #f8ff00;
+            animation: pulse 2s infinite;
+        }
+
+        .success-message h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #f8ff00 0%, #3ad59f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .summary-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .summary-value {
+            font-weight: bold;
+            color: #f8ff00;
+        }
+
+        .data-confirmation {
+            background: rgba(58, 213, 159, 0.1);
+            border: 2px solid #3ad59f;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .data-confirmation i {
+            font-size: 3rem;
+            color: #3ad59f;
+            margin-bottom: 15px;
+        }
+
+        .data-confirmation h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #f8ff00;
+        }
+
+        .redirect-message {
+            font-size: 1.1rem;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border-left: 4px solid #f8ff00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #f8ff00;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Custom checkbox styling */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #3ad59f;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-wallet"></i> Withdrawal Setup</h1>
+            <p>Complete these 5 steps to configure your withdrawal preferences</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="step active" id="step1">
+                    1
+                    <div class="step-label">Experience</div>
+                </div>
+                <div class="step" id="step2">
+                    2
+                    <div class="step-label">Method</div>
+                </div>
+                <div class="step" id="step3">
+                    3
+                    <div class="step-label">Frequency</div>
+                </div>
+                <div class="step" id="step4">
+                    4
+                    <div class="step-label">Limits</div>
+                </div>
+                <div class="step" id="step5">
+                    5
+                    <div class="step-label">User ID</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 1: Withdrawal Experience -->
+        <div class="question-container active" id="question1">
+            <div class="question-header">
+                <div class="question-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <div class="question-text">
+                    <h3>Withdrawal Experience</h3>
+                    <p>Have you withdrawn before or is this your first time initiating a withdrawal?</p>
+                </div>
+            </div>
+            
+            <div class="options-container">
+                <div class="option" data-value="first-time">
+                    <div class="option-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>First Time</h4>
+                        <p>This is my first withdrawal request</p>
+                    </div>
+                </div>
+                
+                <div class="option" data-value="occasional">
+                    <div class="option-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Occasional User</h4>
+                        <p>I have withdrawn a few times before</p>
+                    </div>
+                </div>
+                
+                <div class="option" data-value="regular">
+                    <div class="option-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Regular User</h4>
+                        <p>I withdraw funds regularly</p>
+                    </div>
+                </div>
+                
+                <div class="option" data-value="expert">
+                    <div class="option-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Expert User</h4>
+                        <p>I have extensive withdrawal experience</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="termsAgreement">
+                    <label for="termsAgreement">I agree to the withdrawal terms and conditions</label>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <div></div>
+                <button class="btn" id="nextBtn1">
+                    Next Step <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 2: Preferred Withdrawal Method -->
+        <div class="question-container" id="question2">
+            <div class="question-header">
+                <div class="question-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="question-text">
+                    <h3>Preferred Withdrawal Method</h3>
+                    <p>Choose and assign your preferred method of withdrawal</p>
+                </div>
+            </div>
+            
+            <div class="options-container">
+                <div class="option" data-value="bank-transfer">
+                    <div class="option-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Bank Transfer</h4>
+                        <p>Direct transfer to your bank account</p>
+                    </div>
+                </div>
+                
+                <div class="option" data-value="paypal">
+                    <div class="option-icon">
+                        <i class="fab fa-paypal"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>PayPal</h4>
+                        <p>Withdraw to your PayPal account</p>
+                    </div>
+                </div>
+                
+                <div class="option" data-value="crypto">
+                    <div class="option-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Crypto Wallet</h4>
+                        <p>Transfer to cryptocurrency wallet</p>
+                    </div>
+                </div>
+                
+                <div class="option" data-value="mobile-money">
+                    <div class="option-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Mobile Money</h4>
+                        <p>Withdraw to mobile money account</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <div class="input-group">
+                    <label for="accountDetails">Account Details (if applicable)</label>
+                    <input type="text" id="accountDetails" placeholder="Enter account number or wallet address">
+                    <div class="error-message" id="accountDetailsError">Account details are required for this method</div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prevBtn2">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="btn" id="nextBtn2">
+                    Next Step <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 3: Withdrawal Frequency -->
+        <div class="question-container" id="question3">
+            <div class="question-header">
+                <div class="question-icon">
+                    <i class="fas fa-redo"></i>
+                </div>
+                <div class="question-text">
+                    <h3>Withdrawal Frequency</h3>
+                    <p>How often do you plan to make withdrawals?</p>
+                </div>
+            </div>
+            
+            <div class="options-container">
+                <div class="option" data-value="daily">
+                    <div class="option-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Daily</h4>
+                        <p>Multiple times per day</p>
+                    </div>
+                </div>
+                
+                <div class="option" data-value="weekly">
+                    <div class="option-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Weekly</h4>
+                        <p>Once or twice per week</p>
+                    </div>
+                </div>
+                
+                <div class="option" data-value="monthly">
+                    <div class="option-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Monthly</h4>
+                        <p>A few times per month</p>
+                    </div>
+                </div>
+                
+                <div class="option" data-value="occasional">
+                    <div class="option-icon">
+                        <i class="fas fa-random"></i>
+                    </div>
+                    <div class="option-text">
+                        <h4>Occasionally</h4>
+                        <p>Only when needed</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <div class="input-group">
+                    <label for="notificationPreference">Notification Preference</label>
+                    <select id="notificationPreference">
+                        <option value="">Select notification option</option>
+                        <option value="email">Email Notifications</option>
+                        <option value="sms">SMS Notifications</option>
+                        <option value="push">Push Notifications</option>
+                        <option value="all">All Notifications</option>
+                        <option value="none">No Notifications</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prevBtn3">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="btn" id="nextBtn3">
+                    Next Step <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 4: Withdrawal Limits -->
+        <div class="question-container" id="question4">
+            <div class="question-header">
+                <div class="question-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="question-text">
+                    <h3>Withdrawal Limits</h3>
+                    <p>Set your preferred withdrawal limits for security</p>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <div class="input-group">
+                    <label for="dailyLimit">Daily Withdrawal Limit ($)</label>
+                    <input type="number" id="dailyLimit" placeholder="e.g., 1000" min="10" max="100000">
+                    <div class="error-message" id="dailyLimitError">Please enter a valid daily limit ($10 - $100,000)</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="transactionLimit">Maximum Per Transaction ($)</label>
+                    <input type="number" id="transactionLimit" placeholder="e.g., 500" min="5" max="50000">
+                    <div class="error-message" id="transactionLimitError">Transaction limit must be less than or equal to daily limit</div>
+                </div>
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="securityLock">
+                    <label for="securityLock">Enable security lock for large withdrawals</label>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prevBtn4">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="btn" id="nextBtn4">
+                    Next Step <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 5: User ID -->
+        <div class="question-container" id="question5">
+            <div class="question-header">
+                <div class="question-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="question-text">
+                    <h3>User Identification</h3>
+                    <p>Enter your User ID and verification details</p>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <div class="input-group">
+                    <label for="userID">User ID *</label>
+                    <input type="text" id="userID" placeholder="Enter your unique User ID" required>
+                    <div class="error-message" id="userIDError">User ID is required</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" placeholder="Enter your email address" required>
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="securityQuestion">Security Question</label>
+                    <select id="securityQuestion">
+                        <option value="">Select a security question</option>
+                        <option value="pet">What is your pet's name?</option>
+                        <option value="city">In what city were you born?</option>
+                        <option value="school">What is the name of your first school?</option>
+                        <option value="car">What was your first car model?</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="securityAnswer">Security Answer</label>
+                    <input type="text" id="securityAnswer" placeholder="Enter your answer">
+                </div>
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="twoFactorAuth">
+                    <label for="twoFactorAuth">Enable two-factor authentication for withdrawals</label>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prevBtn5">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="btn" id="submitBtn">
+                    Complete Setup <i class="fas fa-check-circle"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+            <div class="data-confirmation">
+                <i class="fas fa-check-circle"></i>
+                <h3>Data Successfully Received!</h3>
+                <p>All your withdrawal preferences have been saved successfully.</p>
+            </div>
+            
+            <h2>Withdrawal Setup Complete!</h2>
+            <p>Your account has been configured with the following settings:</p>
+            
+            <div class="summary-container" id="summaryContainer">
+                <!-- Summary will be dynamically inserted here -->
+            </div>
+            
+            <div class="redirect-message" id="redirectMessage">
+                <i class="fas fa-sync-alt fa-spin"></i>
+                <p>Preparing your dashboard... Redirecting in <span id="countdown">5</span> seconds</p>
+            </div>
+            
+            <button class="btn" id="dashboardBtn">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard Now
+            </button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Secure Withdrawal Setup Portal • All rights reserved</p>
+    </div>
+
+    <script>
+        // Current step tracking
+        let currentStep = 1;
+        const totalSteps = 5;
+        let countdownInterval = null;
+        
+        // User responses storage
+        const userResponses = {
+            experience: null,
+            method: null,
+            frequency: null,
+            dailyLimit: null,
+            transactionLimit: null,
+            userID: null,
+            email: null,
+            securityQuestion: null,
+            securityAnswer: null,
+            termsAgreed: false,
+            securityLock: false,
+            twoFactorAuth: false,
+            notificationPreference: null,
+            accountDetails: null
+        };
+        
+        // DOM Elements
+        const progressFill = document.getElementById('progressFill');
+        const stepElements = document.querySelectorAll('.step');
+        const questionContainers = document.querySelectorAll('.question-container');
+        const successMessage = document.getElementById('successMessage');
+        const summaryContainer = document.getElementById('summaryContainer');
+        const redirectMessage = document.getElementById('redirectMessage');
+        const countdownElement = document.getElementById('countdown');
+        
+        // Question 1 elements
+        const options1 = document.querySelectorAll('#question1 .option');
+        const termsAgreement = document.getElementById('termsAgreement');
+        const nextBtn1 = document.getElementById('nextBtn1');
+        
+        // Question 2 elements
+        const options2 = document.querySelectorAll('#question2 .option');
+        const accountDetails = document.getElementById('accountDetails');
+        const accountDetailsError = document.getElementById('accountDetailsError');
+        const prevBtn2 = document.getElementById('prevBtn2');
+        const nextBtn2 = document.getElementById('nextBtn2');
+        
+        // Question 3 elements
+        const options3 = document.querySelectorAll('#question3 .option');
+        const notificationPreference = document.getElementById('notificationPreference');
+        const prevBtn3 = document.getElementById('prevBtn3');
+        const nextBtn3 = document.getElementById('nextBtn3');
+        
+        // Question 4 elements
+        const dailyLimit = document.getElementById('dailyLimit');
+        const transactionLimit = document.getElementById('transactionLimit');
+        const dailyLimitError = document.getElementById('dailyLimitError');
+        const transactionLimitError = document.getElementById('transactionLimitError');
+        const securityLock = document.getElementById('securityLock');
+        const prevBtn4 = document.getElementById('prevBtn4');
+        const nextBtn4 = document.getElementById('nextBtn4');
+        
+        // Question 5 elements
+        const userID = document.getElementById('userID');
+        const email = document.getElementById('email');
+        const securityQuestion = document.getElementById('securityQuestion');
+        const securityAnswer = document.getElementById('securityAnswer');
+        const twoFactorAuth = document.getElementById('twoFactorAuth');
+        const userIDError = document.getElementById('userIDError');
+        const emailError = document.getElementById('emailError');
+        const prevBtn5 = document.getElementById('prevBtn5');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Success message elements
+        const dashboardBtn = document.getElementById('dashboardBtn');
+        
+        // Check if user completed pin registration
+        window.addEventListener('load', function() {
+            const pinRegistrationComplete = localStorage.getItem('pinRegistrationComplete');
+            if (!pinRegistrationComplete) {
+                alert('Please complete the pin registration first.');
+                window.location.href = "index.html";
+                return;
+            }
+            
+            // Initialize
+            updateProgress();
+        });
+        
+        // Question 1: Experience options
+        options1.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                options1.forEach(opt => opt.classList.remove('selected'));
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Store the selected value
+                userResponses.experience = this.getAttribute('data-value');
+                
+                // Enable next button if terms are agreed
+                updateNextButton1();
+            });
+        });
+        
+        // Terms agreement checkbox
+        termsAgreement.addEventListener('change', function() {
+            userResponses.termsAgreed = this.checked;
+            updateNextButton1();
+        });
+        
+        function updateNextButton1() {
+            nextBtn1.disabled = !(userResponses.experience && userResponses.termsAgreed);
+        }
+        
+        // Question 2: Method options
+        options2.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                options2.forEach(opt => opt.classList.remove('selected'));
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Store the selected value
+                userResponses.method = this.getAttribute('data-value');
+                
+                // Show/hide account details error
+                updateAccountDetailsValidation();
+                
+                // Enable next button if account details are filled for certain methods
+                updateNextButton2();
+            });
+        });
+        
+        // Account details input
+        accountDetails.addEventListener('input', function() {
+            userResponses.accountDetails = this.value;
+            updateAccountDetailsValidation();
+            updateNextButton2();
+        });
+        
+        function updateAccountDetailsValidation() {
+            // For bank transfer and crypto, account details are required
+            const requiresAccountDetails = ['bank-transfer', 'crypto'].includes(userResponses.method);
+            const hasAccountDetails = userResponses.accountDetails && userResponses.accountDetails.trim() !== '';
+            
+            if (requiresAccountDetails && !hasAccountDetails && userResponses.method) {
+                accountDetailsError.classList.add('show');
+                accountDetails.style.borderColor = '#ff6b6b';
+            } else {
+                accountDetailsError.classList.remove('show');
+                accountDetails.style.borderColor = userResponses.accountDetails ? '#3ad59f' : 'rgba(255, 255, 255, 0.2)';
+            }
+        }
+        
+        function updateNextButton2() {
+            // For bank transfer and crypto, account details are required
+            const requiresAccountDetails = ['bank-transfer', 'crypto'].includes(userResponses.method);
+            const hasAccountDetails = userResponses.accountDetails && userResponses.accountDetails.trim() !== '';
+            
+            nextBtn2.disabled = !userResponses.method || (requiresAccountDetails && !hasAccountDetails);
+        }
+        
+        // Question 3: Frequency options
+        options3.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                options3.forEach(opt => opt.classList.remove('selected'));
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Store the selected value
+                userResponses.frequency = this.getAttribute('data-value');
+                
+                // Enable next button
+                updateNextButton3();
+            });
+        });
+        
+        // Notification preference
+        notificationPreference.addEventListener('change', function() {
+            userResponses.notificationPreference = this.value;
+            updateNextButton3();
+        });
+        
+        function updateNextButton3() {
+            nextBtn3.disabled = !(userResponses.frequency && userResponses.notificationPreference);
+        }
+        
+        // Question 4: Limits inputs
+        dailyLimit.addEventListener('input', function() {
+            userResponses.dailyLimit = this.value;
+            validateLimits();
+            updateNextButton4();
+        });
+        
+        transactionLimit.addEventListener('input', function() {
+            userResponses.transactionLimit = this.value;
+            validateLimits();
+            updateNextButton4();
+        });
+        
+        securityLock.addEventListener('change', function() {
+            userResponses.securityLock = this.checked;
+        });
+        
+        function validateLimits() {
+            const daily = parseInt(userResponses.dailyLimit) || 0;
+            const transaction = parseInt(userResponses.transactionLimit) || 0;
+            
+            // Validate daily limit
+            if (daily < 10 || daily > 100000) {
+                dailyLimitError.classList.add('show');
+                dailyLimit.style.borderColor = '#ff6b6b';
+            } else {
+                dailyLimitError.classList.remove('show');
+                dailyLimit.style.borderColor = '#3ad59f';
+            }
+            
+            // Validate transaction limit
+            if (transaction < 5 || transaction > 50000 || (daily > 0 && transaction > daily)) {
+                transactionLimitError.classList.add('show');
+                transactionLimit.style.borderColor = '#ff6b6b';
+            } else {
+                transactionLimitError.classList.remove('show');
+                transactionLimit.style.borderColor = '#3ad59f';
+            }
+        }
+        
+        function updateNextButton4() {
+            const daily = parseInt(userResponses.dailyLimit) || 0;
+            const transaction = parseInt(userResponses.transactionLimit) || 0;
+            
+            let isValid = daily >= 10 && daily <= 100000 && 
+                         transaction >= 5 && transaction <= 50000 &&
+                         transaction <= daily;
+            
+            nextBtn4.disabled = !isValid;
+        }
+        
+        // Question 5: User ID inputs
+        userID.addEventListener('input', function() {
+            userResponses.userID = this.value;
+            validateUserID();
+            updateSubmitButton();
+        });
+        
+        email.addEventListener('input', function() {
+            userResponses.email = this.value;
+            validateEmail();
+            updateSubmitButton();
+        });
+        
+        securityQuestion.addEventListener('change', function() {
+            userResponses.securityQuestion = this.value;
+        });
+        
+        securityAnswer.addEventListener('input', function() {
+            userResponses.securityAnswer = this.value;
+        });
+        
+        twoFactorAuth.addEventListener('change', function() {
+            userResponses.twoFactorAuth = this.checked;
+        });
+        
+        function validateUserID() {
+            if (!userResponses.userID || userResponses.userID.trim() === '') {
+                userIDError.classList.add('show');
+                userID.style.borderColor = '#ff6b6b';
+                return false;
+            } else {
+                userIDError.classList.remove('show');
+                userID.style.borderColor = '#3ad59f';
+                return true;
+            }
+        }
+        
+        function validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValid = emailRegex.test(userResponses.email || '');
+            
+            if (!isValid) {
+                emailError.classList.add('show');
+                email.style.borderColor = '#ff6b6b';
+                return false;
+            } else {
+                emailError.classList.remove('show');
+                email.style.borderColor = '#3ad59f';
+                return true;
+            }
+        }
+        
+        function updateSubmitButton() {
+            const isUserIDValid = validateUserID();
+            const isEmailValid = validateEmail();
+            
+            submitBtn.disabled = !(isUserIDValid && isEmailValid);
+        }
+        
+        // Navigation functions
+        function goToStep(step) {
+            // Hide current question
+            questionContainers[currentStep - 1].classList.remove('active');
+            
+            // Update current step
+            currentStep = step;
+            
+            // Show new question
+            questionContainers[currentStep - 1].classList.add('active');
+            
+            // Update progress bar and steps
+            updateProgress();
+            
+            // Scroll to top of question
+            questionContainers[currentStep - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function updateProgress() {
+            // Update progress fill width
+            const progressPercentage = (currentStep / totalSteps) * 100;
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update step indicators
+            stepElements.forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                
+                if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+        }
+        
+        // Next button event listeners
+        nextBtn1.addEventListener('click', () => goToStep(2));
+        nextBtn2.addEventListener('click', () => goToStep(3));
+        nextBtn3.addEventListener('click', () => goToStep(4));
+        nextBtn4.addEventListener('click', () => goToStep(5));
+        
+        // Previous button event listeners
+        prevBtn2.addEventListener('click', () => goToStep(1));
+        prevBtn3.addEventListener('click', () => goToStep(2));
+        prevBtn4.addEventListener('click', () => goToStep(3));
+        prevBtn5.addEventListener('click', () => goToStep(4));
+        
+        // Submit button
+        submitBtn.addEventListener('click', function() {
+            // Validate all inputs one more time
+            if (!validateUserID() || !validateEmail()) {
+                alert('Please fill in all required fields correctly.');
+                return;
+            }
+            
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="loader"></span> Processing...';
+            submitBtn.disabled = true;
+            
+            // Simulate processing
+            setTimeout(() => {
+                // Hide question container
+                questionContainers[4].classList.remove('active');
+                
+                // Generate and display summary
+                generateSummary();
+                
+                // Show success message
+                successMessage.classList.add('active');
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Start countdown for auto-redirect
+                startCountdown();
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 1500);
+        });
+        
+        function generateSummary() {
+            // Map experience values to display text
+            const experienceMap = {
+                'first-time': 'First Time User',
+                'occasional': 'Occasional User',
+                'regular': 'Regular User',
+                'expert': 'Expert User'
+            };
+            
+            // Map method values to display text
+            const methodMap = {
+                'bank-transfer': 'Bank Transfer',
+                'paypal': 'PayPal',
+                'crypto': 'Crypto Wallet',
+                'mobile-money': 'Mobile Money'
+            };
+            
+            // Map frequency values to display text
+            const frequencyMap = {
+                'daily': 'Daily',
+                'weekly': 'Weekly',
+                'monthly': 'Monthly',
+                'occasional': 'Occasionally'
+            };
+            
+            // Map notification values to display text
+            const notificationMap = {
+                'email': 'Email Only',
+                'sms': 'SMS Only',
+                'push': 'Push Only',
+                'all': 'All Notifications',
+                'none': 'No Notifications'
+            };
+            
+            const summaryHTML = `
+                <div class="summary-item">
+                    <span class="summary-label">Withdrawal Experience:</span>
+                    <span class="summary-value">${experienceMap[userResponses.experience] || 'Not specified'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Preferred Method:</span>
+                    <span class="summary-value">${methodMap[userResponses.method] || 'Not specified'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Account Details:</span>
+                    <span class="summary-value">${userResponses.accountDetails ? userResponses.accountDetails.substring(0, 20) + '...' : 'Not specified'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Withdrawal Frequency:</span>
+                    <span class="summary-value">${frequencyMap[userResponses.frequency] || 'Not specified'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Notification Preference:</span>
+                    <span class="summary-value">${notificationMap[userResponses.notificationPreference] || 'Not specified'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Daily Limit:</span>
+                    <span class="summary-value">$${userResponses.dailyLimit || '0'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Per Transaction Limit:</span>
+                    <span class="summary-value">$${userResponses.transactionLimit || '0'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Security Lock:</span>
+                    <span class="summary-value">${userResponses.securityLock ? 'Enabled' : 'Disabled'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">User ID:</span>
+                    <span class="summary-value">${userResponses.userID || 'Not specified'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Email:</span>
+                    <span class="summary-value">${userResponses.email || 'Not specified'}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Two-Factor Auth:</span>
+                    <span class="summary-value">${userResponses.twoFactorAuth ? 'Enabled' : 'Disabled'}</span>
+                </div>
+            `;
+            
+            summaryContainer.innerHTML = summaryHTML;
+        }
+        
+        function startCountdown() {
+            let countdown = 5;
+            countdownElement.textContent = countdown;
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    redirectToDashboard();
+                }
+            }, 1000);
+        }
+        
+        function redirectToDashboard() {
+            // Show loading state
+            redirectMessage.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i><p>Redirecting to your dashboard now...</p>';
+            
+            // Save all data to localStorage
+            localStorage.setItem('withdrawalSetupData', JSON.stringify(userResponses));
+            localStorage.setItem('setupComplete', 'true');
+            
+            // Countdown before redirect
+            setTimeout(() => {
+                // Redirect to home.html
+                window.location.href = "home.html";
+            }, 1500);
+        }
+        
+        // Dashboard button
+        dashboardBtn.addEventListener('click', function() {
+            // Clear the countdown
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            // Show loading state
+            const originalText = dashboardBtn.innerHTML;
+            dashboardBtn.innerHTML = '<span class="loader"></span> Redirecting...';
+            dashboardBtn.disabled = true;
+            
+            // Save all data to localStorage
+            localStorage.setItem('withdrawalSetupData', JSON.stringify(userResponses));
+            localStorage.setItem('setupComplete', 'true');
+            
+            // Redirect immediately
+            setTimeout(() => {
+                window.location.href = "home.html";
+            }, 500);
+        });
+    </script>
+</body>
+</html>

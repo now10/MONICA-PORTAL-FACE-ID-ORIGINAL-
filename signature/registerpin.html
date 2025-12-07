@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Code Registration Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c2461 0%, #1e3799 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .security-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .security-box h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #4facfe;
+            font-size: 1.5rem;
+        }
+
+        .security-box i {
+            font-size: 1.8rem;
+        }
+
+        .hash-input {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .hash-input input {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .hash-input input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            color: #0c2461;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .portal {
+            display: none;
+            animation: expandPortal 0.8s ease-out forwards;
+        }
+
+        .portal.active {
+            display: block;
+        }
+
+        .panels-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .panels-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+        }
+
+        .panel h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #00f2fe;
+            font-size: 1.3rem;
+        }
+
+        .pin-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .pin-field {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .pin-field:focus {
+            border-color: #00f2fe;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .pin-field.error {
+            border-color: #ff6b6b;
+            animation: shake 0.5s;
+        }
+
+        .pin-field.valid {
+            border-color: #51cf66;
+        }
+
+        .validation-message {
+            font-size: 0.85rem;
+            min-height: 20px;
+            margin-top: 5px;
+        }
+
+        .validation-message.error {
+            color: #ff6b6b;
+        }
+
+        .validation-message.success {
+            color: #51cf66;
+        }
+
+        .success-message {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-message i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #51cf66;
+            animation: pulse 2s infinite;
+        }
+
+        .success-message h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #51cf66 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .success-message p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+
+        .next-step-btn {
+            background: linear-gradient(to right, #f093fb 0%, #f5576c 100%);
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .hash-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            display: none;
+        }
+
+        .hash-display.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes expandPortal {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #4facfe;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-lock"></i> Pin Code Registration Portal</h1>
+            <p>Secure your transactions with unique pin codes</p>
+        </div>
+
+        <div class="security-box" id="securityBox">
+            <h2><i class="fas fa-shield-alt"></i> Security Verification</h2>
+            <p>Please enter the correct hash code to unlock the portal:</p>
+            <div class="hash-input">
+                <input type="text" id="hashInput" placeholder="Enter hash code here..." maxlength="64">
+                <button class="btn" id="verifyHashBtn">
+                    <i class="fas fa-key"></i> Verify Hash Code
+                </button>
+            </div>
+            <div class="hash-display" id="hashDisplay">
+                <strong>Correct Hash:</strong> <span id="correctHash">7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span>
+            </div>
+        </div>
+
+        <div class="portal" id="registrationPortal">
+            <div class="panels-container">
+                <div class="panel">
+                    <h3><i class="fas fa-money-bill-wave"></i> Withdrawal Pin Code</h3>
+                    <p>Create a new 6-digit pin code for withdrawals:</p>
+                    <div class="pin-inputs">
+                        <div class="input-group">
+                            <label for="withdrawalPin">New Pin Code</label>
+                            <input type="password" class="pin-field" id="withdrawalPin" placeholder="••••••" maxlength="6" inputmode="numeric">
+                            <div class="validation-message" id="withdrawalMsg"></div>
+                        </div>
+                        <div class="input-group">
+                            <label for="withdrawalConfirm">Confirm Pin Code</label>
+                            <input type="password" class="pin-field" id="withdrawalConfirm" placeholder="••••••" maxlength="6" inputmode="numeric">
+                            <div class="validation-message" id="withdrawalConfirmMsg"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3><i class="fas fa-exchange-alt"></i> Transfer Pin Code</h3>
+                    <p>Register a 6-digit pin code for transfers:</p>
+                    <div class="pin-inputs">
+                        <div class="input-group">
+                            <label for="transferPin">New Pin Code</label>
+                            <input type="password" class="pin-field" id="transferPin" placeholder="••••••" maxlength="6" inputmode="numeric">
+                            <div class="validation-message" id="transferMsg"></div>
+                        </div>
+                        <div class="input-group">
+                            <label for="transferConfirm">Confirm Pin Code</label>
+                            <input type="password" class="pin-field" id="transferConfirm" placeholder="••••••" maxlength="6" inputmode="numeric">
+                            <div class="validation-message" id="transferConfirmMsg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="security-box">
+                <button class="btn" id="registerBtn" disabled>
+                    <i class="fas fa-user-check"></i> Register Pin Codes
+                </button>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i>
+            <h2>Registration Successful</h2>
+            <p>Your new Pin Codes are now active.</p>
+            <p>You can now securely withdraw funds and make transfers using your new pin codes.</p>
+            <button class="btn next-step-btn" id="nextStepBtn">
+                <i class="fas fa-arrow-right"></i> Continue to Withdrawal Setup
+            </button>
+            <button class="btn close-btn" id="closeBtn">
+                <i class="fas fa-times"></i> Close Portal
+            </button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Secure Pin Code Registration Portal v2.0 • All rights reserved</p>
+    </div>
+
+    <script>
+        // Correct hash code (SHA-256 of "SecurePinPortal2023")
+        const CORRECT_HASH = "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069";
+        
+        // DOM Elements
+        const securityBox = document.getElementById('securityBox');
+        const hashInput = document.getElementById('hashInput');
+        const verifyHashBtn = document.getElementById('verifyHashBtn');
+        const hashDisplay = document.getElementById('hashDisplay');
+        const registrationPortal = document.getElementById('registrationPortal');
+        const successMessage = document.getElementById('successMessage');
+        
+        // Pin input fields
+        const withdrawalPin = document.getElementById('withdrawalPin');
+        const withdrawalConfirm = document.getElementById('withdrawalConfirm');
+        const transferPin = document.getElementById('transferPin');
+        const transferConfirm = document.getElementById('transferConfirm');
+        const registerBtn = document.getElementById('registerBtn');
+        const nextStepBtn = document.getElementById('nextStepBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        
+        // Validation message elements
+        const withdrawalMsg = document.getElementById('withdrawalMsg');
+        const withdrawalConfirmMsg = document.getElementById('withdrawalConfirmMsg');
+        const transferMsg = document.getElementById('transferMsg');
+        const transferConfirmMsg = document.getElementById('transferConfirmMsg');
+        
+        // State variables
+        let isHashVerified = false;
+        let isWithdrawalValid = false;
+        let isTransferValid = false;
+        
+        // Show the hash code after 3 seconds (for demo purposes)
+        setTimeout(() => {
+            hashDisplay.classList.add('active');
+        }, 3000);
+        
+        // Hash verification
+        verifyHashBtn.addEventListener('click', verifyHash);
+        hashInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') verifyHash();
+        });
+        
+        function verifyHash() {
+            const enteredHash = hashInput.value.trim();
+            
+            if (!enteredHash) {
+                showHashError("Please enter a hash code");
+                return;
+            }
+            
+            // Show loading state
+            const originalText = verifyHashBtn.innerHTML;
+            verifyHashBtn.innerHTML = '<span class="loader"></span> Verifying...';
+            verifyHashBtn.disabled = true;
+            
+            // Simulate verification process
+            setTimeout(() => {
+                if (enteredHash.toLowerCase() === CORRECT_HASH.toLowerCase()) {
+                    // Success
+                    isHashVerified = true;
+                    securityBox.style.borderColor = "#51cf66";
+                    securityBox.style.boxShadow = "0 0 20px rgba(81, 207, 102, 0.5)";
+                    
+                    // Unlock portal after a short delay
+                    setTimeout(() => {
+                        securityBox.style.opacity = "0.7";
+                        registrationPortal.classList.add('active');
+                        // Scroll to portal
+                        registrationPortal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 500);
+                    
+                } else {
+                    // Error
+                    showHashError("Invalid hash code. Please try again.");
+                    hashInput.classList.add('error');
+                    setTimeout(() => hashInput.classList.remove('error'), 500);
+                }
+                
+                // Reset button
+                verifyHashBtn.innerHTML = originalText;
+                verifyHashBtn.disabled = false;
+            }, 800);
+        }
+        
+        function showHashError(message) {
+            // Create error element if it doesn't exist
+            let errorEl = document.querySelector('.hash-error');
+            if (!errorEl) {
+                errorEl = document.createElement('div');
+                errorEl.className = 'validation-message error hash-error';
+                hashInput.parentNode.insertBefore(errorEl, hashInput.nextSibling);
+            }
+            
+            errorEl.textContent = message;
+            setTimeout(() => {
+                errorEl.textContent = '';
+            }, 3000);
+        }
+        
+        // Pin validation functions
+        function validatePin(pin, confirmPin, pinMsg, confirmMsg) {
+            let isValid = false;
+            
+            // Check if pin is 6 digits
+            if (!/^\d{6}$/.test(pin)) {
+                pinMsg.textContent = "Pin must be 6 digits";
+                pinMsg.className = "validation-message error";
+                return false;
+            } else {
+                pinMsg.textContent = "✓ Valid format";
+                pinMsg.className = "validation-message success";
+            }
+            
+            // Check if pins match
+            if (pin !== confirmPin) {
+                confirmMsg.textContent = "Pins do not match";
+                confirmMsg.className = "validation-message error";
+                return false;
+            } else if (confirmPin) {
+                confirmMsg.textContent = "✓ Pins match";
+                confirmMsg.className = "validation-message success";
+                isValid = true;
+            }
+            
+            return isValid;
+        }
+        
+        // Add validation events to all pin fields
+        [withdrawalPin, withdrawalConfirm, transferPin, transferConfirm].forEach(field => {
+            field.addEventListener('input', validateAllPins);
+            field.addEventListener('blur', validateAllPins);
+        });
+        
+        function validateAllPins() {
+            // Validate withdrawal pin
+            isWithdrawalValid = validatePin(
+                withdrawalPin.value, 
+                withdrawalConfirm.value, 
+                withdrawalMsg, 
+                withdrawalConfirmMsg
+            );
+            
+            // Validate transfer pin
+            isTransferValid = validatePin(
+                transferPin.value, 
+                transferConfirm.value, 
+                transferMsg, 
+                transferConfirmMsg
+            );
+            
+            // Check if pins are the same (should be different for security)
+            if (withdrawalPin.value && transferPin.value && withdrawalPin.value === transferPin.value) {
+                transferMsg.textContent = "Transfer pin should be different from withdrawal pin";
+                transferMsg.className = "validation-message error";
+                isTransferValid = false;
+            }
+            
+            // Enable/disable register button
+            registerBtn.disabled = !(isWithdrawalValid && isTransferValid);
+            
+            // Visual feedback for valid pins
+            if (isWithdrawalValid) {
+                withdrawalPin.classList.add('valid');
+                withdrawalConfirm.classList.add('valid');
+            } else {
+                withdrawalPin.classList.remove('valid');
+                withdrawalConfirm.classList.remove('valid');
+            }
+            
+            if (isTransferValid) {
+                transferPin.classList.add('valid');
+                transferConfirm.classList.add('valid');
+            } else {
+                transferPin.classList.remove('valid');
+                transferConfirm.classList.remove('valid');
+            }
+        }
+        
+        // Register button click
+        registerBtn.addEventListener('click', () => {
+            // Show loading state
+            const originalText = registerBtn.innerHTML;
+            registerBtn.innerHTML = '<span class="loader"></span> Registering...';
+            registerBtn.disabled = true;
+            
+            // Simulate registration process
+            setTimeout(() => {
+                // Hide registration portal
+                registrationPortal.style.opacity = "0";
+                registrationPortal.style.transform = "scale(0.9)";
+                
+                // Show success message after a delay
+                setTimeout(() => {
+                    registrationPortal.style.display = "none";
+                    successMessage.classList.add('active');
+                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 500);
+                
+                // Reset button (though it won't be visible)
+                registerBtn.innerHTML = originalText;
+            }, 1500);
+        });
+        
+        // Next Step button - redirect to questions page
+        nextStepBtn.addEventListener('click', () => {
+            // Save pin data to localStorage for use in the next page
+            localStorage.setItem('withdrawalPin', withdrawalPin.value);
+            localStorage.setItem('transferPin', transferPin.value);
+            localStorage.setItem('pinRegistrationComplete', 'true');
+            
+            // Animate transition
+            successMessage.style.opacity = "0";
+            successMessage.style.transform = "scale(0.9)";
+            
+            setTimeout(() => {
+                // Redirect to question page
+                window.location.href = "question.html";
+            }, 500);
+        });
+        
+        // Close portal button
+        closeBtn.addEventListener('click', () => {
+            // Animate out
+            successMessage.style.opacity = "0";
+            successMessage.style.transform = "scale(0.9)";
+            
+            // Show reset message
+            setTimeout(() => {
+                successMessage.classList.remove('active');
+                successMessage.style.opacity = "1";
+                successMessage.style.transform = "scale(1)";
+                
+                // Reset the entire portal
+                resetPortal();
+            }, 500);
+        });
+        
+        function resetPortal() {
+            // Reset security box
+            securityBox.style.opacity = "1";
+            securityBox.style.borderColor = "rgba(255, 255, 255, 0.1)";
+            securityBox.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.2)";
+            
+            // Reset registration portal
+            registrationPortal.style.display = "none";
+            registrationPortal.style.opacity = "1";
+            registrationPortal.style.transform = "scale(1)";
+            registrationPortal.classList.remove('active');
+            
+            // Reset form
+            hashInput.value = "";
+            withdrawalPin.value = "";
+            withdrawalConfirm.value = "";
+            transferPin.value = "";
+            transferConfirm.value = "";
+            
+            // Clear validation messages
+            [withdrawalMsg, withdrawalConfirmMsg, transferMsg, transferConfirmMsg].forEach(el => {
+                el.textContent = "";
+                el.className = "validation-message";
+            });
+            
+            // Remove valid classes
+            [withdrawalPin, withdrawalConfirm, transferPin, transferConfirm].forEach(el => {
+                el.classList.remove('valid');
+            });
+            
+            // Reset state
+            isHashVerified = false;
+            isWithdrawalValid = false;
+            isTransferValid = false;
+            registerBtn.disabled = true;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Initial setup
+        hashInput.focus();
+    </script>
+</body>
+</html>
