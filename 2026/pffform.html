@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trevor Nemo Stock | Preliminary Form Generation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #e0f7ff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background-color: rgba(10, 25, 35, 0.9);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid #00b4d8;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #00b4d8;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #90e0ef;
+            font-weight: 300;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            flex: 1;
+        }
+        
+        .card {
+            background-color: rgba(15, 40, 55, 0.85);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 180, 216, 0.2);
+        }
+        
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #caf0f8;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(to right, #0077b6, #0096c7);
+            color: white;
+            border: none;
+            padding: 1.2rem 2.5rem;
+            font-size: 1.3rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 0 auto 2rem;
+            box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3);
+        }
+        
+        .generate-btn:hover {
+            background: linear-gradient(to right, #0096c7, #00b4d8);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 119, 182, 0.4);
+        }
+        
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .generate-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .loading-container {
+            display: none;
+            text-align: center;
+            margin-top: 2rem;
+            padding: 2rem;
+            background-color: rgba(10, 25, 35, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 180, 216, 0.3);
+        }
+        
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(0, 180, 216, 0.2);
+            border-top: 8px solid #00b4d8;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            animation: spin 1.5s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .progress-sequence {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00b4d8;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 8px rgba(0, 180, 216, 0.5);
+        }
+        
+        .progress-text {
+            font-size: 1.2rem;
+            color: #90e0ef;
+            margin-bottom: 0.5rem;
+        }
+        
+        .error-container {
+            display: none;
+            background-color: rgba(40, 15, 25, 0.85);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-left: 6px solid #e63946;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .error-title {
+            font-size: 1.8rem;
+            color: #ff6b81;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .error-details {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.2rem;
+            border: 1px solid rgba(230, 57, 70, 0.3);
+        }
+        
+        .error-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .error-section h4 {
+            color: #ff9eaa;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .error-section ul {
+            list-style-type: none;
+            padding-left: 1rem;
+        }
+        
+        .error-section li {
+            padding: 0.3rem 0;
+            color: #ffccd5;
+        }
+        
+        .status-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: rgba(10, 25, 35, 0.9);
+            border-top: 1px solid rgba(0, 180, 216, 0.2);
+            margin-top: auto;
+        }
+        
+        .footer-text {
+            color: #90e0ef;
+            font-size: 0.9rem;
+        }
+        
+        .retry-btn {
+            background-color: #e63946;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .retry-btn:hover {
+            background-color: #ff4d6d;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .generate-btn {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+            
+            .progress-sequence {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-file-contract"></i> Trevor Nemo Stock</h1>
+            <p class="subtitle">Preliminary Form Generation System</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <p class="intro-text">
+                This system generates Preliminary First-Focus (P.F.F.) Forms for Trevor Nemo Stock database integration. 
+                Each form requires validation against stored credentials, IDs, and information databases. 
+                Click the button below to initiate a new P.F.F. Form generation sequence.
+            </p>
+            
+            <button id="generateBtn" class="generate-btn">
+                <i class="fas fa-bolt"></i> Generate New P.F.F. Form
+            </button>
+            
+            <div id="loadingContainer" class="loading-container">
+                <div class="spinner"></div>
+                <div class="progress-sequence" id="sequenceCounter">1</div>
+                <p class="progress-text" id="progressText">Initializing generation sequence...</p>
+                <p class="progress-text">Validating database credentials and information</p>
+            </div>
+            
+            <div id="errorContainer" class="error-container">
+                <h2 class="error-title">
+                    <i class="fas fa-exclamation-triangle"></i> P.F.F. FORM Generation FAILED (:
+                </h2>
+                <p><strong>Reason Why:</strong> Logged & Stored Data's doesn't Match...</p>
+                <p>causing mismatch of DATABASED IDs, Credentials and Informations</p>
+                
+                <div class="error-details">
+                    <div class="error-section">
+                        <h4><i class="fas fa-database status-icon"></i> Database Mismatch Details:</h4>
+                        <ul>
+                            <li><i class="fas fa-times-circle" style="color: #e63946;"></i> User ID credentials do not match stored authentication tokens</li>
+                            <li><i class="fas fa-times-circle" style="color: #e63946;"></i> Form schema version (3.2.1) incompatible with database schema (3.1.8)</li>
+                            <li><i class="fas fa-times-circle" style="color: #e63946;"></i> Data validation checksum failed at sequence 87</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="error-section">
+                        <h4><i class="fas fa-server status-icon"></i> System Log Information:</h4>
+                        <ul>
+                            <li><i class="fas fa-info-circle" style="color: #00b4d8;"></i> Error logged at: <span id="errorTimestamp"></span></li>
+                            <li><i class="fas fa-info-circle" style="color: #00b4d8;"></i> Generation attempt: #4129</li>
+                            <li><i class="fas fa-info-circle" style="color: #00b4d8;"></i> Failure point: Sequence 87 of 96</li>
+                            <li><i class="fas fa-info-circle" style="color: #00b4d8;"></i> Session ID: TNS-PFF-7294-2023-87A</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="error-section">
+                        <h4><i class="fas fa-wrench status-icon"></i> Recommended Actions:</h4>
+                        <ul>
+                            <li><i class="fas fa-check-circle" style="color: #2a9d8f;"></i> Verify database connection credentials</li>
+                            <li><i class="fas fa-check-circle" style="color: #2a9d8f;"></i> Update form schema to match database version</li>
+                            <li><i class="fas fa-check-circle" style="color: #2a9d8f;"></i> Clear cache and restart generation sequence</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <button id="retryBtn" class="retry-btn">
+                    <i class="fas fa-redo"></i> Retry Generation Sequence
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p class="footer-text">Trevor Nemo Stock P.F.F. Form Generation System | Secure Database v3.2.1</p>
+        <p class="footer-text">© 2023 Trevor Nemo Stock. All rights reserved. Unauthorized access prohibited.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateBtn = document.getElementById('generateBtn');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const errorContainer = document.getElementById('errorContainer');
+            const sequenceCounter = document.getElementById('sequenceCounter');
+            const progressText = document.getElementById('progressText');
+            const retryBtn = document.getElementById('retryBtn');
+            const errorTimestamp = document.getElementById('errorTimestamp');
+            
+            // Set current timestamp for error
+            const now = new Date();
+            errorTimestamp.textContent = now.toLocaleString();
+            
+            let sequenceNumber = 1;
+            let countInterval;
+            
+            // Generate button click handler
+            generateBtn.addEventListener('click', function() {
+                // Disable button
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<i class="fas fa-cog fa-spin"></i> Generating P.F.F. Form...';
+                
+                // Show loading container
+                loadingContainer.style.display = 'block';
+                errorContainer.style.display = 'none';
+                
+                // Reset sequence
+                sequenceNumber = 1;
+                sequenceCounter.textContent = sequenceNumber;
+                progressText.textContent = 'Initializing generation sequence...';
+                
+                // Start sequence count
+                countInterval = setInterval(updateSequence, 100);
+            });
+            
+            // Retry button click handler
+            retryBtn.addEventListener('click', function() {
+                errorContainer.style.display = 'none';
+                generateBtn.click();
+            });
+            
+            // Function to update sequence counter
+            function updateSequence() {
+                sequenceNumber++;
+                sequenceCounter.textContent = sequenceNumber;
+                
+                // Update progress text based on sequence
+                if (sequenceNumber < 20) {
+                    progressText.textContent = 'Accessing primary database...';
+                } else if (sequenceNumber < 40) {
+                    progressText.textContent = 'Validating user credentials...';
+                } else if (sequenceNumber < 60) {
+                    progressText.textContent = 'Matching stored data patterns...';
+                } else if (sequenceNumber < 80) {
+                    progressText.textContent = 'Cross-referencing database IDs...';
+                } else if (sequenceNumber < 96) {
+                    progressText.textContent = 'Finalizing form generation...';
+                }
+                
+                // When we reach 96, pause for 7 seconds then show error
+                if (sequenceNumber >= 96) {
+                    clearInterval(countInterval);
+                    sequenceCounter.textContent = '96';
+                    progressText.textContent = 'Sequence complete. Finalizing...';
+                    
+                    // Wait 7 seconds then show error
+                    setTimeout(showError, 7000);
+                }
+            }
+            
+            // Function to show error message
+            function showError() {
+                loadingContainer.style.display = 'none';
+                errorContainer.style.display = 'block';
+                
+                // Re-enable generate button
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-bolt"></i> Generate New P.F.F. Form';
+                
+                // Update timestamp
+                const now = new Date();
+                errorTimestamp.textContent = now.toLocaleString();
+            }
+            
+            // Add some visual effects
+            generateBtn.addEventListener('mouseover', function() {
+                if (!generateBtn.disabled) {
+                    generateBtn.style.transform = 'translateY(-3px)';
+                }
+            });
+            
+            generateBtn.addEventListener('mouseout', function() {
+                if (!generateBtn.disabled) {
+                    generateBtn.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
