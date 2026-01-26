@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trevor02 NemoStock - Preliminary First-Focus Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2d6bc7;
+            --accent-color: #00a86b;
+            --warning-color: #f59e0b;
+            --danger-color: #dc2626;
+            --light-color: #f8fafc;
+            --dark-color: #0f172a;
+            --gray-color: #64748b;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            color: var(--accent-color);
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .user-details h3 {
+            font-size: 1.1rem;
+        }
+
+        .user-details p {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        /* Forms Container */
+        .forms-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Form Cards */
+        .form-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.8rem;
+            transition: var(--transition);
+        }
+
+        .form-card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .form-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: rgba(42, 157, 143, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            font-size: 1.3rem;
+        }
+
+        .form-title h2 {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+        }
+
+        .form-title p {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(45, 107, 199, 0.2);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper select {
+            appearance: none;
+            padding-right: 2.5rem;
+        }
+
+        .select-wrapper::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+            pointer-events: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 1.8rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #1e4a9c;
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+        }
+
+        .btn-accent:hover {
+            background-color: #008f5c;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+
+        .btn-warning:hover {
+            background-color: #d97706;
+        }
+
+        .form-note {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background-color: #f8fafc;
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--warning-color);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.8rem;
+        }
+
+        .info-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.7rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 1.3rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.2rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+        }
+
+        .status-dot.pending {
+            background-color: var(--warning-color);
+        }
+
+        .balance-display {
+            background-color: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+
+        .balance-label {
+            color: var(--gray-color);
+            font-size: 0.95rem;
+        }
+
+        .quick-links {
+            list-style: none;
+        }
+
+        .quick-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .quick-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.8rem;
+            color: var(--dark-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .quick-links a:hover {
+            background-color: #f1f5f9;
+            color: var(--secondary-color);
+        }
+
+        .quick-links i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--gray-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--danger-color);
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--accent-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner-container p {
+            margin-top: 1rem;
+            color: var(--gray-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+
+        /* Used IDs Section */
+        .used-ids-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .security-note {
+            background-color: #fff7ed;
+            border-left: 4px solid var(--warning-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .security-note i {
+            color: var(--warning-color);
+            margin-right: 10px;
+        }
+
+        .example-text {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* ID Check Results */
+        .id-check-result {
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+            display: none;
+        }
+
+        .id-check-result.success {
+            background-color: #d1fae5;
+            border-left: 4px solid var(--accent-color);
+            color: #065f46;
+        }
+
+        .id-check-result.error {
+            background-color: #fee2e2;
+            border-left: 4px solid var(--danger-color);
+            color: #991b1b;
+        }
+
+        .id-check-result i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-area">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Trevor02 NemoStock</h1>
+                    <p>Preliminary First-Focus Form</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">TS</div>
+                <div class="user-details">
+                    <h3>Trevor Smith</h3>
+                    <p>Current ID: <span id="currentUserId">USER00571J1</span></p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container main-content">
+        <!-- Forms Section -->
+        <div class="forms-container">
+            <!-- Preliminary First-Focus Form -->
+            <section class="form-card">
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="form-title">
+                        <h2>Preliminary First-Focus Form</h2>
+                        <p>Complete this form to initiate your withdrawal process</p>
+                    </div>
+                </div>
+                <p style="margin-bottom: 1.5rem;">This preliminary form ensures that your withdrawal request is processed efficiently. Please fill out all required fields accurately to avoid delays. The information provided will be used to verify your identity and process your withdrawal to the correct account.</p>
+                
+                <form id="preliminaryForm">
+                    <div class="form-group">
+                        <label for="withdrawalPurpose">Withdrawal Purpose</label>
+                        <div class="select-wrapper">
+                            <select class="form-control" id="withdrawalPurpose" required>
+                                <option value="">Select a purpose</option>
+                                <option value="profit">Profit Withdrawal</option>
+                                <option value="investment-return">Investment Return</option>
+                                <option value="account-closure">Account Closure</option>
+                                <option value="emergency">Emergency Funds</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">Withdrawal Amount (EUR)</label>
+                        <input type="number" class="form-control" id="amount" min="50" max="50000" step="0.01" placeholder="Enter amount (Min: €50)" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="urgency">Urgency Level</label>
+                        <div class="select-wrapper">
+                            <select class="form-control" id="urgency" required>
+                                <option value="">Select urgency</option>
+                                <option value="standard">Standard (3-5 business days)</option>
+                                <option value="expedited">Expedited (1-2 business days) - €15 fee</option>
+                                <option value="emergency">Emergency (Same day) - €30 fee</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Additional Notes (Optional)</label>
+                        <textarea class="form-control" id="notes" rows="3" placeholder="Any additional information regarding your withdrawal request"></textarea>
+                    </div>
+                    
+                    <!-- ID Check Results -->
+                    <div id="idCheckResult" class="id-check-result">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    
+                    <div class="spinner-container" id="formSpinner" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Verifying form data and checking ID correspondence...</p>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-block btn-accent" id="submitBtn">
+                        Submit Preliminary Form
+                    </button>
+                </form>
+                
+                <div class="form-note">
+                    <i class="fas fa-info-circle"></i> After submitting this form, you will be redirected to complete the full withdrawal request with account details.
+                </div>
+
+                <!-- Submit Used IDs Section -->
+                <div class="used-ids-section">
+                    <div class="form-header">
+                        <div class="form-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div class="form-title">
+                            <h2>Submit Used IDs</h2>
+                            <p>Report previously used account IDs for security purposes</p>
+                        </div>
+                    </div>
+
+                    <div class="security-note">
+                        <i class="fas fa-shield-alt"></i>
+                        <strong>Security Information:</strong> Please report any previously used account IDs to help us maintain account security and prevent unauthorized access.
+                    </div>
+                    
+                    <form id="usedIdsForm">
+                        <div class="form-group">
+                            <label for="oldId">Old Account ID</label>
+                            <input type="text" class="form-control" id="oldId" placeholder="Enter previously used ID" required>
+                            <span class="example-text">Example: USER00571</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="reason">Reason for ID Change</label>
+                            <div class="select-wrapper">
+                                <select class="form-control" id="reason" required>
+                                    <option value="">Select reason</option>
+                                    <option value="security">Security Concerns</option>
+                                    <option value="forgot">Forgot Credentials</option>
+                                    <option value="update">Account Update</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newId">New Account ID</label>
+                            <input type="text" class="form-control" id="newId" placeholder="Enter your current ID" required>
+                            <span class="example-text">Example: USER00571J1</span>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-block btn-warning">Submit Used ID Report</button>
+                    </form>
+                    
+                    <div class="form-note" style="margin-top: 1rem;">
+                        <i class="fas fa-exclamation-triangle"></i> This information helps us maintain account security and prevent unauthorized access. All ID changes are logged for audit purposes.
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Account Status -->
+            <div class="info-card">
+                <h3>Account Status</h3>
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Active - Verified</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot pending"></div>
+                    <span>Withdrawal Pending: <strong>€1,250.00</strong></span>
+                </div>
+                
+                <div class="balance-display">
+                    <p class="balance-label">Available Balance</p>
+                    <div class="balance-amount">€ 188,590.04</div>
+                    <p class="balance-label">Last updated: Today, 10:42 AM</p>
+                </div>
+                
+                <div style="margin-top: 1.5rem;">
+                    <a href="dashboard.html" class="btn btn-block" style="margin-bottom: 10px;">
+                        <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                    </a>
+                    <a href="withdraw.html" class="btn btn-block btn-accent">
+                        <i class="fas fa-money-check-alt"></i> Withdraw Funds
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="info-card">
+                <h3>Quick Links</h3>
+                <ul class="quick-links">
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="withdraw.html"><i class="fas fa-money-check-alt"></i> Withdraw Funds</a></li>
+                    <li><a href="#"><i class="fas fa-history"></i> Withdrawal History</a></li>
+                    <li><a href="#"><i class="fas fa-headset"></i> Support Center</a></li>
+                    <li><a href="#"><i class="fas fa-file-contract"></i> Terms & Conditions</a></li>
+                </ul>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="info-card">
+                <h3>Recent Activity</h3>
+                <div style="font-size: 0.9rem;">
+                    <p><strong>Jun 15:</strong> Withdrawal processed - €500.00</p>
+                    <p><strong>Jun 10:</strong> Account verification completed</p>
+                    <p><strong>Jun 5:</strong> ID updated to USER00571J1</p>
+                    <p><strong>Jun 1:</strong> Balance update +€2,150.00</p>
+                    <p><strong>May 28:</strong> Old ID USER00571 reported</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="copyright">
+                &copy; 2026 Trevor02 NemoStock Withdrawal Portal. All rights reserved.
+            </div>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Security</a>
+                <a href="#">Contact Support</a>
+                <a href="#">FAQ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSuccessModal()">&times;</span>
+            <div class="form-header" style="border-bottom: none; margin-bottom: 1rem; text-align: center;">
+                <div class="form-icon" style="margin: 0 auto 1rem; background-color: rgba(0, 168, 107, 0.1);">
+                    <i class="fas fa-check-circle" style="color: var(--accent-color); font-size: 2rem;"></i>
+                </div>
+                <div class="form-title">
+                    <h2>Form Submitted Successfully!</h2>
+                    <p>Your preliminary form has been verified</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; padding: 1rem;">
+                <div id="idCheckDetails">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <a href="withdraw.html" class="btn btn-accent" style="margin-right: 10px;">
+                        Proceed to Withdrawal
+                    </a>
+                    <button onclick="closeSuccessModal()" class="btn">
+                        Stay on Page
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Expected ID values (hidden from user, stored in system)
+        const EXPECTED_OLD_ID = 'USER00571';
+        const EXPECTED_NEW_ID = 'USER00571J1';
+
+        // Form submissions
+        document.getElementById('preliminaryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const oldId = document.getElementById('oldId').value.trim();
+            const newId = document.getElementById('newId').value.trim();
+            
+            // Show spinner
+            const submitBtn = document.getElementById('submitBtn');
+            const spinner = document.getElementById('formSpinner');
+            const idCheckResult = document.getElementById('idCheckResult');
+            
+            submitBtn.style.display = 'none';
+            spinner.style.display = 'block';
+            idCheckResult.style.display = 'none';
+            
+            // Simulate verification process
+            setTimeout(() => {
+                // Hide spinner
+                spinner.style.display = 'none';
+                submitBtn.style.display = 'block';
+                
+                // Check ID correspondence
+                let isValid = true;
+                let errorMessages = [];
+                
+                // Check Old ID
+                if (oldId !== EXPECTED_OLD_ID) {
+                    isValid = false;
+                    errorMessages.push(`Old ID mismatch. Expected: ${EXPECTED_OLD_ID}`);
+                }
+                
+                // Check New ID
+                if (newId !== EXPECTED_NEW_ID) {
+                    isValid = false;
+                    errorMessages.push(`New ID mismatch. Expected: ${EXPECTED_NEW_ID}`);
+                }
+                
+                // Show results
+                if (isValid) {
+                    // Show success message
+                    idCheckResult.className = 'id-check-result success';
+                    idCheckResult.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <strong>ID Correspondence Check:</strong> ✅ PASSED<br>
+                        Old ID: <strong>${oldId}</strong> → New ID: <strong>${newId}</strong>
+                    `;
+                    idCheckResult.style.display = 'block';
+                    
+                    // Show success modal after a brief delay
+                    setTimeout(() => {
+                        showSuccessModal(oldId, newId);
+                    }, 500);
+                } else {
+                    // Show error message
+                    idCheckResult.className = 'id-check-result error';
+                    let errorHtml = `<i class="fas fa-exclamation-circle"></i>
+                        <strong>ID Correspondence Check:</strong> ❌ FAILED<br>`;
+                    
+                    errorMessages.forEach(msg => {
+                        errorHtml += `${msg}<br>`;
+                    });
+                    
+                    idCheckResult.innerHTML = errorHtml;
+                    idCheckResult.style.display = 'block';
+                    
+                    // Scroll to error
+                    idCheckResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 2000); // 2 second simulation
+        });
+
+        // Used IDs Form submission
+        document.getElementById('usedIdsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const oldId = document.getElementById('oldId').value.trim();
+            const newId = document.getElementById('newId').value.trim();
+            const reason = document.getElementById('reason').value;
+            
+            // Simple validation
+            if (!oldId || !newId || !reason) {
+                alert('Please fill all required fields in the Used IDs form.');
+                return;
+            }
+            
+            alert('Used ID report submitted. Thank you for helping us maintain account security.');
+            
+            // Clear form
+            document.getElementById('usedIdsForm').reset();
+        });
+
+        // Show success modal with ID details
+        function showSuccessModal(oldId, newId) {
+            const idCheckDetails = document.getElementById('idCheckDetails');
+            idCheckDetails.innerHTML = `
+                <p><strong>ID Correspondence Check:</strong> ✅ PASSED</p>
+                <p>Old ID: <strong>${oldId}</strong> → New ID: <strong>${newId}</strong></p>
+                <p style="margin-top: 1rem; color: var(--accent-color);">
+                    <i class="fas fa-check-circle"></i> All IDs match expected values
+                </p>
+                <p style="margin-top: 1rem;">Your form data has been verified and submitted successfully.</p>
+            `;
+            
+            document.getElementById('successModal').style.display = 'flex';
+        }
+
+        // Modal functionality
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            const successModal = document.getElementById('successModal');
+            if (e.target === successModal) {
+                successModal.style.display = 'none';
+            }
+        });
+
+        // Real-time ID validation (optional, can be removed)
+        document.getElementById('oldId').addEventListener('input', function() {
+            const idCheckResult = document.getElementById('idCheckResult');
+            idCheckResult.style.display = 'none';
+        });
+        
+        document.getElementById('newId').addEventListener('input', function() {
+            const idCheckResult = document.getElementById('idCheckResult');
+            idCheckResult.style.display = 'none';
+        });
+
+        // Form validation
+        const formInputs = document.querySelectorAll('.form-control');
+        formInputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value.trim() !== '' && this.checkValidity()) {
+                    this.style.borderColor = 'var(--accent-color)';
+                } else if (this.hasAttribute('required') && this.value.trim() === '') {
+                    this.style.borderColor = 'var(--danger-color)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

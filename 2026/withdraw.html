@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trevor02 NemoStock - Withdrawal</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles */
+        .review-section {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .review-section::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .review-section::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .review-section::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 3px;
+        }
+        
+        .review-section::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+        
+        /* External deposit styles */
+        .external-deposit {
+            background-color: #fff7ed;
+            border: 1px solid var(--warning-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .external-deposit-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--warning-color);
+        }
+        
+        .conversion-info {
+            background-color: #f0f9ff;
+            border: 1px solid var(--secondary-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .conversion-details {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .conversion-rate {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        /* Security PIN specific styles */
+        .pin-error {
+            display: none;
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .pin-error.show {
+            display: block;
+        }
+        
+        .pin-attempts {
+            font-size: 0.8rem;
+            color: var(--warning-color);
+            margin-top: 0.5rem;
+        }
+        
+        /* Withdrawal status timeline */
+        .status-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .status-timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background-color: #e2e8f0;
+            z-index: 1;
+        }
+        
+        .status-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .status-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            color: var(--gray-color);
+        }
+        
+        .status-step.active .status-icon {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .status-step.completed .status-icon {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .status-step.pending .status-icon {
+            background-color: var(--warning-color);
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-label {
+            font-size: 0.75rem;
+            text-align: center;
+            color: var(--gray-color);
+        }
+        
+        .status-step.active .status-label {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        /* Lockout message */
+        .lockout-message {
+            background-color: #fef3c7;
+            border: 1px solid var(--warning-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            display: none;
+        }
+        
+        .lockout-message.show {
+            display: block;
+        }
+        
+        .lockout-icon {
+            font-size: 2rem;
+            color: var(--warning-color);
+            margin-bottom: 1rem;
+        }
+        
+        /* Wide modal for scrollable content */
+        .wide-modal .modal-content {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        /* Processing fee section */
+        .processing-fee-section {
+            background-color: #f8fafc;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .fee-explanation {
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            margin: 0.5rem 0;
+        }
+        
+        .step-list {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .step-list li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        
+        /* Success Modal - Updated for scrollability */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .success-modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .success-modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            text-align: center;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .withdrawal-id {
+            background-color: #f8fafc;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-family: monospace;
+            font-size: 1.1rem;
+            margin: 1rem 0;
+            color: var(--primary-color);
+            word-break: break-all;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-badge.pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .success-modal-footer {
+            padding: 1.5rem 2rem;
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        /* Responsive success modal */
+        @media (max-width: 768px) {
+            .success-modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+            
+            .success-modal-body {
+                padding: 1.5rem;
+            }
+            
+            .status-timeline {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            
+            .status-timeline::before {
+                display: none;
+            }
+            
+            .status-step {
+                flex: 0 0 calc(50% - 0.5rem);
+            }
+            
+            .withdrawal-id {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .success-modal-content {
+                max-height: 90vh;
+            }
+        }
+        
+        /* Scrollbar styling for success modal */
+        .success-modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .success-modal-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+            margin: 10px 0;
+        }
+        
+        .success-modal-body::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 3px;
+        }
+        
+        .success-modal-body::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+        
+        /* Close button for success modal */
+        .success-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--gray-color);
+            cursor: pointer;
+            transition: var(--transition);
+            background: none;
+            border: none;
+            z-index: 10;
+        }
+        
+        .success-close-btn:hover {
+            color: var(--danger-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-area">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Trevor02 NemoStock</h1>
+                    <p>Secure Withdrawal Portal</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">TS</div>
+                <div class="user-details">
+                    <h3>Trevor Smith</h3>
+                    <p>ID: USER00571J1 | Balance: <span class="balance-highlight">€188,590.04</span></p>
+                </div>
+                <a href="dashboard.html" class="btn btn-outline">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Steps -->
+    <section class="progress-section">
+        <div class="container">
+            <div class="progress-steps">
+                <div class="progress-step completed">
+                    <div class="step-icon">1</div>
+                    <div class="step-label">Preliminary Form</div>
+                </div>
+                <div class="progress-step active">
+                    <div class="step-icon">2</div>
+                    <div class="step-label">Withdrawal Details</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-icon">3</div>
+                    <div class="step-label">Confirmation</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-icon">4</div>
+                    <div class="step-label">Complete</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container main-content">
+        <!-- Left: Withdrawal Form -->
+        <div class="withdrawal-form-container">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-money-check-alt"></i>
+                    </div>
+                    <div class="form-title">
+                        <h2>Withdrawal Request</h2>
+                        <p>Complete your withdrawal details</p>
+                    </div>
+                </div>
+
+                <!-- Amount Selection -->
+                <div class="form-section">
+                    <h3 class="section-title">Amount to Withdraw</h3>
+                    <div class="form-group">
+                        <label for="amount">Withdrawal Amount (EUR)</label>
+                        <div class="amount-input-container">
+                            <span class="currency-symbol">€</span>
+                            <input type="number" class="form-control amount-input" id="amount" 
+                                   min="50" max="188590.04" step="0.01" 
+                                   placeholder="0.00" value="" required>
+                        </div>
+                        
+                        <!-- Quick Amount Buttons -->
+                        <div class="quick-amounts">
+                            <button type="button" class="quick-amount-btn" data-amount="100">€100</button>
+                            <button type="button" class="quick-amount-btn" data-amount="500">€500</button>
+                            <button type="button" class="quick-amount-btn" data-amount="1000">€1,000</button>
+                            <button type="button" class="quick-amount-btn" data-amount="5000">€5,000</button>
+                            <button type="button" class="quick-amount-btn" data-amount="10000">€10,000</button>
+                            <button type="button" class="quick-amount-btn" id="maxAmount">MAX</button>
+                        </div>
+                        
+                        <div class="balance-info">
+                            <span>Available: <strong id="availableBalance">€188,590.04</strong></span>
+                            <span>Minimum: €50.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Withdrawal Method -->
+                <div class="form-section">
+                    <h3 class="section-title">Withdrawal Method</h3>
+                    
+                    <!-- Saved Account Methods -->
+                    <div class="saved-methods">
+                        <div class="method-card active" data-method="bank-transfer">
+                            <div class="method-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div class="method-details">
+                                <h4>Bank Transfer</h4>
+                                <p>Deutsche Bank •••• 4872</p>
+                                <span class="method-status">Primary</span>
+                            </div>
+                            <div class="method-select">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="method-card" data-method="paypal">
+                            <div class="method-icon">
+                                <i class="fab fa-paypal"></i>
+                            </div>
+                            <div class="method-details">
+                                <h4>PayPal</h4>
+                                <p>trevor.smith@email.com</p>
+                                <span class="method-status">Verified</span>
+                            </div>
+                            <div class="method-select">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="method-card" data-method="crypto">
+                            <div class="method-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="method-details">
+                                <h4>Crypto Wallet</h4>
+                                <p>Bitcoin •••• f3a7</p>
+                                <span class="method-status">Verified</span>
+                            </div>
+                            <div class="method-select">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn-add-method">
+                            <i class="fas fa-plus"></i> Add New Method
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CNY to EURO Conversion -->
+                <div class="form-section">
+                    <h3 class="section-title">CNY → EURO Conversion</h3>
+                    <div class="conversion-info">
+                        <div class="conversion-details">
+                            <span>Current Exchange Rate:</span>
+                            <span class="conversion-rate">1 CNY = 0.128 EUR</span>
+                        </div>
+                        <div class="conversion-details">
+                            <span>Your funds are converted from:</span>
+                            <span id="cnyAmount">0.00 CNY</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Fee Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Processing Information</h3>
+                    <div class="processing-fee-section">
+                        <div class="external-deposit">
+                            <div class="external-deposit-header">
+                                <i class="fas fa-external-link-alt"></i>
+                                <h4>External Deposit Required</h4>
+                            </div>
+                            <div class="fee-explanation">
+                                <strong>Processing Fee:</strong> <span id="processingFeeDisplay">€0.00</span> (1.5% of withdrawal amount)
+                            </div>
+                            <p><strong>Withdrawal Flow:</strong></p>
+                            <ol class="step-list">
+                                <li>Submit withdrawal request with Security PIN</li>
+                                <li>Status: <strong>Pending</strong> (awaiting fee deposit)</li>
+                                <li>Deposit processing fee externally</li>
+                                <li>Status changes to: <strong>Processing</strong></li>
+                                <li>Funds travel from CNY to EURO</li>
+                                <li>Full withdrawal amount sent to your account</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fee Calculator -->
+                <div class="form-section">
+                    <h3 class="section-title">Transaction Summary</h3>
+                    <div class="fee-calculator">
+                        <div class="fee-row">
+                            <span>Withdrawal Amount:</span>
+                            <span id="feeAmount">€0.00</span>
+                        </div>
+                        <div class="fee-row">
+                            <span>Processing Fee (1.5%):</span>
+                            <span id="processingFee">€0.00</span>
+                        </div>
+                        <div class="fee-row">
+                            <span>Network Fee:</span>
+                            <span id="networkFee">€2.50</span>
+                        </div>
+                        <div class="fee-row urgent-fee">
+                            <span>Urgency Fee:</span>
+                            <span id="urgencyFee">€0.00</span>
+                        </div>
+                        <div class="fee-row total">
+                            <span><strong>Total You Receive:</strong></span>
+                            <span id="totalReceive">€0.00</span>
+                        </div>
+                        <div class="fee-row external-fee">
+                            <span><i class="fas fa-external-link-alt"></i> External Deposit Required:</span>
+                            <span id="externalFee">€0.00</span>
+                        </div>
+                        <div class="fee-row est-time">
+                            <span><i class="far fa-clock"></i> Estimated Time:</span>
+                            <span id="estimatedTime">7-10 business days*</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Urgency Selection -->
+                <div class="form-section">
+                    <h3 class="section-title">Processing Speed</h3>
+                    <div class="urgency-options">
+                        <div class="urgency-option" data-urgency="standard">
+                            <div class="urgency-icon">
+                                <i class="far fa-clock"></i>
+                            </div>
+                            <div class="urgency-details">
+                                <h4>Standard</h4>
+                                <p>7-10 business days</p>
+                                <span class="urgency-fee">No extra fee</span>
+                            </div>
+                        </div>
+                        
+                        <div class="urgency-option" data-urgency="express">
+                            <div class="urgency-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="urgency-details">
+                                <h4>Express</h4>
+                                <p>3-5 business days</p>
+                                <span class="urgency-fee">+€15.00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="urgency-option" data-urgency="urgent">
+                            <div class="urgency-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div class="urgency-details">
+                                <h4>Urgent</h4>
+                                <p>24-48 hours</p>
+                                <span class="urgency-fee">+€30.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-section">
+                    <button type="submit" class="btn btn-block btn-accent" id="submitWithdrawal">
+                        <i class="fas fa-paper-plane"></i> Continue to Confirmation
+                    </button>
+                    <div class="form-note">
+                        <i class="fas fa-shield-alt"></i> <strong>Security PIN Required:</strong> Use your assigned PIN (005711) to confirm withdrawal.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Transaction History Sidebar -->
+        <div class="sidebar">
+            <!-- Recent Transactions -->
+            <div class="info-card">
+                <div class="card-header">
+                    <h3>Recent Transactions</h3>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                <div class="transactions-list">
+                    <div class="transaction-item success">
+                        <div class="transaction-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>€2,500.00</h4>
+                            <p>Bank Transfer • Jun 15, 2026</p>
+                            <span class="transaction-status">Completed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-item pending">
+                        <div class="transaction-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>€1,250.00</h4>
+                            <p>PayPal • Jun 18, 2026</p>
+                            <span class="transaction-status">Awaiting Fee</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-item processing">
+                        <div class="transaction-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>€3,800.00</h4>
+                            <p>Bank Transfer • Jun 20, 2026</p>
+                            <span class="transaction-status">Processing</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-item success">
+                        <div class="transaction-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>€500.00</h4>
+                            <p>Crypto • Jun 10, 2026</p>
+                            <span class="transaction-status">Completed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-item cancelled">
+                        <div class="transaction-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>€750.00</h4>
+                            <p>PayPal • May 28, 2026</p>
+                            <span class="transaction-status">PIN Lockout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdrawal Status Timeline -->
+            <div class="info-card">
+                <h3>Withdrawal Status Flow</h3>
+                <div class="status-timeline">
+                    <div class="status-step completed">
+                        <div class="status-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="status-label">Submitted</div>
+                    </div>
+                    <div class="status-step pending">
+                        <div class="status-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="status-label">Pending<br>(Awaiting Fee)</div>
+                    </div>
+                    <div class="status-step">
+                        <div class="status-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="status-label">Processing</div>
+                    </div>
+                    <div class="status-step">
+                        <div class="status-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="status-label">Completed</div>
+                    </div>
+                </div>
+                <div class="form-note" style="margin-top: 1rem;">
+                    <i class="fas fa-info-circle"></i> Withdrawals remain <strong>Pending</strong> until processing fee deposit is confirmed.
+                </div>
+            </div>
+
+            <!-- Security Info -->
+            <div class="info-card">
+                <h3>Security Information</h3>
+                <div class="security-info">
+                    <div class="security-item">
+                        <i class="fas fa-key" style="color: var(--accent-color);"></i>
+                        <span>Your Security PIN: <strong>005711</strong></span>
+                    </div>
+                    <div class="form-note" style="margin-top: 1rem;">
+                        <i class="fas fa-exclamation-triangle"></i> Wrong PIN attempts will lock withdrawals for 24 hours.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="copyright">
+                &copy; 2026 Trevor02 NemoStock. Use Security PIN: 005711 for withdrawals.
+            </div>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-exchange-alt"></i> Conversion Info</a>
+                <a href="#"><i class="fas fa-external-link-alt"></i> Fee Deposit</a>
+                <a href="#"><i class="fas fa-headset"></i> Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Confirmation Modal -->
+    <div class="modal wide-modal" id="confirmationModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="form-header" style="border-bottom: none; margin-bottom: 1rem; text-align: center;">
+                <div class="form-icon" style="margin: 0 auto 1rem; background-color: rgba(0, 168, 107, 0.1);">
+                    <i class="fas fa-check-circle" style="color: var(--accent-color); font-size: 2rem;"></i>
+                </div>
+                <div class="form-title">
+                    <h2>Confirm Withdrawal</h2>
+                    <p>Review your withdrawal details</p>
+                </div>
+            </div>
+            
+            <!-- PIN Error Message -->
+            <div class="pin-error" id="pinError">
+                <i class="fas fa-exclamation-circle"></i>
+                <strong>Incorrect Security PIN</strong>
+                <p>You have entered an incorrect PIN. Please try again after 24 hours.</p>
+            </div>
+            
+            <!-- Lockout Message -->
+            <div class="lockout-message" id="lockoutMessage">
+                <div class="lockout-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Withdrawals Locked</h3>
+                <p>You have exceeded the maximum PIN attempts.</p>
+                <p><strong>Next attempt available:</strong></p>
+                <div id="lockoutTimer" style="font-size: 1.2rem; font-weight: bold; color: var(--warning-color); margin: 1rem 0;">
+                    24:00:00
+                </div>
+                <p>Please contact support if you need immediate assistance.</p>
+            </div>
+            
+            <!-- Scrollable Review Section -->
+            <div class="review-section" id="reviewSection">
+                <div class="confirmation-details">
+                    <h3 style="margin-bottom: 1rem; color: var(--primary-color);">Transaction Summary</h3>
+                    
+                    <div class="detail-row">
+                        <span>Withdrawal Amount:</span>
+                        <span id="confirmAmount">€0.00</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Withdrawal Method:</span>
+                        <span id="confirmMethod">Bank Transfer</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Processing Speed:</span>
+                        <span id="confirmSpeed">Standard (7-10 days)</span>
+                    </div>
+                    
+                    <div class="detail-row total">
+                        <span><strong>Total You Receive:</strong></span>
+                        <span id="confirmTotal">€0.00</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span>Estimated Completion:</span>
+                        <span id="confirmTime">Jun 30, 2026</span>
+                    </div>
+                </div>
+                
+                <!-- Processing Fee Section -->
+                <div class="processing-fee-section" style="margin: 1.5rem 0;">
+                    <div class="external-deposit">
+                        <div class="external-deposit-header">
+                            <i class="fas fa-external-link-alt"></i>
+                            <h4>External Deposit Required</h4>
+                        </div>
+                        <div class="fee-explanation" style="margin: 1rem 0;">
+                            <strong>Processing Fee to Deposit:</strong> 
+                            <span id="confirmProcessingFee" style="color: var(--warning-color); font-size: 1.1rem;">€0.00</span>
+                        </div>
+                        <p><strong>Deposit Instructions:</strong></p>
+                        <ol class="step-list">
+                            <li>Send <span id="confirmFeeAmount">€0.00</span> to our processing account</li>
+                            <li>Include your User ID (USER00571J1) as reference</li>
+                            <li>Upload deposit confirmation in your dashboard</li>
+                            <li>Withdrawal status changes to <strong>Processing</strong></li>
+                            <li>Full amount sent after CNY→EURO conversion</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="deposit-account" style="margin: 1rem 0; padding: 1rem; background: white; border-radius: var(--border-radius);">
+                        <h5 style="margin-bottom: 0.5rem;">Processing Account Details:</h5>
+                        <div style="font-family: monospace; font-size: 0.9rem; color: var(--dark-color);">
+                            <div>Bank: HSBC Hong Kong</div>
+                            <div>Account: 848-987654-321</div>
+                            <div>SWIFT: HSBCHKHHHKH</div>
+                            <div>Reference: USER00571J1-WD</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Check -->
+                <div class="security-check">
+                    <div class="form-group">
+                        <label for="withdrawalPin">
+                            <i class="fas fa-key"></i> Security PIN (005711)
+                        </label>
+                        <input type="password" class="form-control" id="withdrawalPin" maxlength="6" 
+                               placeholder="Enter 6-digit PIN (005711)" required>
+                        <div class="pin-attempts">
+                            <span id="attemptsCount">Attempts remaining: 3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check" style="margin: 1rem 0;">
+                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            I understand this withdrawal will be <strong>Pending</strong> until the external processing fee deposit is confirmed
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="confirmation-actions">
+                <button class="btn btn-outline" onclick="closeConfirmationModal()">Cancel</button>
+                <button class="btn btn-accent" id="finalConfirm">Confirm Withdrawal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal - Updated for scrollability -->
+    <div class="success-modal" id="successModal">
+        <div class="success-modal-content">
+            <button class="success-close-btn" onclick="closeSuccessModal()">&times;</button>
+            <div class="success-modal-body">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Withdrawal Submitted Successfully!</h2>
+                
+                <div class="withdrawal-id" id="withdrawalId">
+                    WD-USER00571J1-<span id="wdTimestamp"></span>
+                </div>
+                
+                <div class="status-timeline">
+                    <div class="status-step completed">
+                        <div class="status-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="status-label">Submitted</div>
+                    </div>
+                    <div class="status-step active pending">
+                        <div class="status-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="status-label">Pending</div>
+                    </div>
+                    <div class="status-step">
+                        <div class="status-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="status-label">Processing</div>
+                    </div>
+                    <div class="status-step">
+                        <div class="status-icon">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <div class="status-label">Completed</div>
+                    </div>
+                </div>
+                
+                <p style="margin: 1rem 0;">
+                    <strong>Status:</strong> <span class="status-badge pending">PENDING</span>
+                </p>
+                
+                <div class="processing-fee-section">
+                    <h4 style="margin-bottom: 0.5rem; color: var(--warning-color);">
+                        <i class="fas fa-external-link-alt"></i> Next Step Required
+                    </h4>
+                    <p><strong>To activate processing, deposit:</strong></p>
+                    <div style="font-size: 1.3rem; font-weight: bold; color: var(--warning-color); margin: 0.5rem 0;">
+                        <span id="successFeeAmount">€0.00</span>
+                    </div>
+                    
+                    <div style="text-align: left; margin: 1rem 0;">
+                        <p><strong>Deposit to:</strong></p>
+                        <div style="background: white; padding: 1rem; border-radius: var(--border-radius); font-size: 0.9rem;">
+                            <div><strong>Bank:</strong> HSBC Hong Kong</div>
+                            <div><strong>Account:</strong> 848-987654-321</div>
+                            <div><strong>SWIFT:</strong> HSBCHKHHHKH</div>
+                            <div><strong>Reference:</strong> USER00571J1-WD</div>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 1rem;">
+                        <i class="fas fa-info-circle"></i> Upload deposit confirmation in your dashboard to change status to <strong>PROCESSING</strong>.
+                    </p>
+                </div>
+                
+                <div class="conversion-info">
+                    <h4 style="margin-bottom: 0.5rem; color: var(--primary-color);">
+                        <i class="fas fa-exchange-alt"></i> Conversion Information
+                    </h4>
+                    <p>Your funds will travel from <strong>CNY to EURO</strong> during processing.</p>
+                    <p>Exchange rate: <strong>1 CNY = 0.128 EUR</strong></p>
+                    <p>You will receive the full withdrawal amount after conversion.</p>
+                </div>
+                
+                <div class="form-note" style="margin: 1.5rem 0;">
+                    <i class="fas fa-clock"></i> <strong>Important:</strong> Processing will begin only after fee deposit confirmation. Status will update within 1 hour of confirmation upload.
+                </div>
+            </div>
+            
+            <div class="success-modal-footer">
+                <button class="btn btn-accent" onclick="closeSuccessModal()" style="width: 100%;">
+                    <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                </button>
+                <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--gray-color);">
+                    You can track this withdrawal in your dashboard
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="withdraw.js"></script>
+</body>
+</html>
